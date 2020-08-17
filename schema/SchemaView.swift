@@ -10,73 +10,73 @@ import SwiftUI
 import SwiftyJSON
 
 class PinchZoomView: UIView {
-
+    
     weak var delegate: PinchZoomViewDelgate?
-
+    
     private(set) var scale: CGFloat = 0 {
         didSet {
             delegate?.pinchZoomView(self, didChangeScale: scale)
         }
     }
-
+    
     private(set) var anchor: UnitPoint = .center {
         didSet {
             delegate?.pinchZoomView(self, didChangeAnchor: anchor)
         }
     }
-
+    
     private(set) var offset: CGSize = .zero {
         didSet {
             delegate?.pinchZoomView(self, didChangeOffset: offset)
         }
     }
-
+    
     private(set) var isPinching: Bool = false {
         didSet {
             delegate?.pinchZoomView(self, didChangePinching: isPinching)
         }
     }
-
+    
     private var startLocation: CGPoint = .zero
     private var location: CGPoint = .zero
     private var numberOfTouches: Int = 0
-
+    
     init() {
         super.init(frame: .zero)
-
+        
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinch(gesture:)))
         pinchGesture.cancelsTouchesInView = false
         addGestureRecognizer(pinchGesture)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError()
     }
-
+    
     @objc private func pinch(gesture: UIPinchGestureRecognizer) {
-
+        
         switch gesture.state {
         case .began:
             isPinching = true
             startLocation = gesture.location(in: self)
             anchor = UnitPoint(x: startLocation.x / bounds.width, y: startLocation.y / bounds.height)
             numberOfTouches = gesture.numberOfTouches
-
+            
         case .changed:
             if gesture.numberOfTouches != numberOfTouches {
                 // If the number of fingers being used changes, the start location needs to be adjusted to avoid jumping.
                 let newLocation = gesture.location(in: self)
                 let jumpDifference = CGSize(width: newLocation.x - location.x, height: newLocation.y - location.y)
                 startLocation = CGPoint(x: startLocation.x + jumpDifference.width, y: startLocation.y + jumpDifference.height)
-
+                
                 numberOfTouches = gesture.numberOfTouches
             }
-
+            
             scale = gesture.scale
-
+            
             location = gesture.location(in: self)
             offset = CGSize(width: location.x - startLocation.x, height: location.y - startLocation.y)
-
+            
         case .ended, .cancelled, .failed:
             isPinching = false
             scale = 1.0
@@ -86,7 +86,7 @@ class PinchZoomView: UIView {
             break
         }
     }
-
+    
 }
 
 protocol PinchZoomViewDelgate: AnyObject {
@@ -97,43 +97,43 @@ protocol PinchZoomViewDelgate: AnyObject {
 }
 
 struct PinchZoom: UIViewRepresentable {
-
+    
     @Binding var scale: CGFloat
     @Binding var anchor: UnitPoint
     @Binding var offset: CGSize
     @Binding var isPinching: Bool
-
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
-
+    
     func makeUIView(context: Context) -> PinchZoomView {
         let pinchZoomView = PinchZoomView()
         pinchZoomView.delegate = context.coordinator
         return pinchZoomView
     }
-
+    
     func updateUIView(_ pageControl: PinchZoomView, context: Context) { }
-
+    
     class Coordinator: NSObject, PinchZoomViewDelgate {
         var pinchZoom: PinchZoom
-
+        
         init(_ pinchZoom: PinchZoom) {
             self.pinchZoom = pinchZoom
         }
-
+        
         func pinchZoomView(_ pinchZoomView: PinchZoomView, didChangePinching isPinching: Bool) {
             pinchZoom.isPinching = isPinching
         }
-
+        
         func pinchZoomView(_ pinchZoomView: PinchZoomView, didChangeScale scale: CGFloat) {
             pinchZoom.scale = scale
         }
-
+        
         func pinchZoomView(_ pinchZoomView: PinchZoomView, didChangeAnchor anchor: UnitPoint) {
             pinchZoom.anchor = anchor
         }
-
+        
         func pinchZoomView(_ pinchZoomView: PinchZoomView, didChangeOffset offset: CGSize) {
             pinchZoom.offset = offset
         }
@@ -145,7 +145,7 @@ struct PinchToZoom: ViewModifier {
     @State var anchor: UnitPoint = .center
     @State var offset: CGSize = .zero
     @State var isPinching: Bool = false
-
+    
     func body(content: Content) -> some View {
         content
             .scaleEffect(scale, anchor: anchor)
@@ -174,15 +174,7 @@ struct SchemaView: View {
     var body: some View {
         TabView(selection: $selection){
             Group {
-                //if (self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}) != nil && self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})!.classGuid == nil) {
                 TodayView(eventList: $todayController.eventList).environmentObject(todayController)
-                /* }
-                 else {
-                 VStack {
-                 Text("Felaktig profil-typ").bold()
-                 Text("Du måste använda dig av en profil från personnummer/lärare för att kunna se profil-vyn")
-                 }.padding(20)
-                 }*/
             }.tabItem {
                 VStack {
                     Image(systemName: "rectangle.on.rectangle")
@@ -322,47 +314,40 @@ struct WeekView: View {
     private var standardWeekNumLimit = 4
     
     @GestureState var scale: CGFloat = 1.0
-
-    @State private var showingAlert = false
+    
+    @State private var isShareSheetShowing = false
     
     let spacing: CGFloat = 20
-    
-    /* func getTimetable(ofWeek: Int) -> JSON {
-     if (self.weekController.getTimetableJsonWeekLoad(ofWeek: ofWeek) == nil) {
-     return []
-     }
-     else {
-     print("returing correct")
-     return self.weekController.getTimetableJsonWeekLoad(ofWeek: ofWeek)!.timetableJson
-     }
-     }*/
     
     func getSelectedWeek () -> Int {
         return self.foldWeek(week: self.weekController.getCurrentWeek() + self.selection)
     }
     
     var body: some View {
+        
         ZStack {
-        VStack {
+            
+            
+            VStack {
                 /*HStack {
-                    Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").font(.title).bold()
-                }
-                */
-            Spacer()
+                 Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").font(.title).bold()
+                 }
+                 */
+                Spacer()
                 if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
                     VStack {
                         HStack {
                             Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").bold()
                             Spacer()
                         }
-                    Image(uiImage: self.drawTimetable(timetableJson: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.timetableJson)).resizable().aspectRatio(contentMode: .fit).pinchToZoom()
+                        Image(uiImage: self.drawTimetable(timetableJson: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.timetableJson)).resizable().aspectRatio(contentMode: .fit).pinchToZoom()
                     }.padding(25).background(Color(UIColor.secondarySystemGroupedBackground)).cornerRadius(20)
                 }
                 else {
                     Text("Laddar...")
                 }
-            
-            Spacer()
+                
+                Spacer()
                 HStack {
                     Button(action: {
                         self.selection -= 1
@@ -371,164 +356,51 @@ struct WeekView: View {
                         Image(systemName: "arrow.left").font(Font.body.weight(.bold))
                     }.padding()
                     Spacer()
-                Picker("Vecka", selection: $selection) {
-                    if (self.selection < 0) {
-                        Text("\(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").tag(self.selection)
+                    Picker("Vecka", selection: $selection) {
+                        if (self.selection < 0) {
+                            Text("\(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").tag(self.selection)
+                        }
+                        ForEach(0 ..< self.standardWeekNumLimit) { index in
+                            HStack {
+                                Text("\(self.foldWeek(week: self.weekController.getCurrentWeek() + index))")
+                            }.tag(index)
+                        }
+                        if (self.selection >= self.standardWeekNumLimit) {
+                            Text("\(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").tag(self.selection)
+                        }
                     }
-                    ForEach(0 ..< self.standardWeekNumLimit) { index in
-                        HStack {
-                            Text("\(self.foldWeek(week: self.weekController.getCurrentWeek() + index))")
-                        }.tag(index)
+                    .pickerStyle(SegmentedPickerStyle())
+                    .onReceive([selection].publisher.first()) { (value) in
+                        if (self.oldSelection != value || !self.hasLoadedFirstTime) {
+                            print("\(value)")
+                            let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
+                            self.weekController.targetSize = CGSize(width: 600 * 1.5, height: 600 * 1.5 * 1.41428571429)
+                            self.weekController.load(profile: profile, ofWeek: self.foldWeek(week: self.weekController.getCurrentWeek() + value))
+                            self.oldSelection = value
+                            self.hasLoadedFirstTime = true
+                        }
                     }
-                    if (self.selection >= self.standardWeekNumLimit) {
-                        Text("\(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").tag(self.selection)
-                    }
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .onReceive([selection].publisher.first()) { (value) in
-                    if (self.oldSelection != value || !self.hasLoadedFirstTime) {
-                        print("\(value)")
-                        let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
-                        self.weekController.targetSize = CGSize(width: 600 * 1.5, height: 600 * 1.5 * 1.41428571429)
-                        self.weekController.load(profile: profile, ofWeek: self.foldWeek(week: self.weekController.getCurrentWeek() + value))
-                        self.oldSelection = value
-                        self.hasLoadedFirstTime = true
-                    }
-                }
                     
-                Spacer()
+                    Spacer()
                     Button(action: {
                         self.selection += 1
                     }) {
                         Image(systemName: "arrow.right").font(Font.body.weight(.bold))
                     }.padding()
+                }
+                
+                
+                
+            }.padding(10).onAppear {
+                if (self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}) != self.lastUsedProfile) {
+                    self.weekController.timetableJsonWeekLoads = []
+                    self.hasLoadedFirstTime = false
+                    self.lastUsedProfile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
+                }
             }
-        }.padding(10).onAppear {
-            if (self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}) != self.lastUsedProfile) {
-                self.weekController.timetableJsonWeekLoads = []
-                self.hasLoadedFirstTime = false
-                self.lastUsedProfile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
-            }
-        }
         }.background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all))
-            /*.onAppear {
-            self.weekController.timetableJsonWeekLoads = []
-            self.hasLoadedFirstTime = false
-        }*/
-        /*NavigationView {
-         Group {
-         VStack {
-         if (self.weekController.timetableJsonWeekLoads.count > 0) {
-         ScrollView(.horizontal, showsIndicators: true) {
-         HStack {
-         /*HStack {
-         Text("Veckan").font(.largeTitle).bold()
-         Spacer()
-         }*/
-         ForEach(0..<self.weekController.timetableJsonWeekLoads.indices.count, id: \.self) { i in
-         VStack {
-         Button (action: {
-         self.selectedTimetableJsonWeekLoad = self.weekController.timetableJsonWeekLoads[i]
-         self.showingDetail = true
-         }){
-         VStack {
-         HStack {
-         Text("Vecka \(self.weekController.timetableJsonWeekLoads[i].week)").font(.system(size: 25)).foregroundColor(Color(UIColor.secondaryLabel)).bold()
-         Spacer()
-         }
-         Image(uiImage: self.drawTimetable(timetableJson: self.weekController.timetableJsonWeekLoads[i].timetableJson)).resizable()
-         .aspectRatio(contentMode: .fit)/*.if(self.colorScheme == .dark) { view in
-         view.colorInvert()
-         }*/
-         }.sheet(isPresented: self.$showingDetail) {
-         NavigationView {
-         Group {
-         if (self.selectedTimetableJsonWeekLoad != nil) {
-         VStack {
-         Image(uiImage: self.drawTimetable(timetableJson: self.selectedTimetableJsonWeekLoad!.timetableJson)).resizable()
-         .aspectRatio(contentMode: .fit)
-         }.navigationBarTitle("Vecka \(self.selectedTimetableJsonWeekLoad!.week)")
-         }
-         else {
-         Text("Ingen profil vald")
-         }
-         }.navigationBarItems(trailing: Button(action: {
-         self.showingDetail = false
-         }) {
-         HStack {
-         Text("Stäng")
-         }
-         })
-         }
-         }
-         }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20)).buttonStyle(PlainButtonStyle())
-         }.padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
-         }// .padding(10)
-         Spacer()
-         }.padding()
-         }
-         }
-         else {
-         Text("Laddar...")
-         }
-         }
-         }.navigationBarTitle("Veckan")
-         }.onAppear {
-         self.weekController.timetableJsonWeekLoads = []
-         self.weekController.targetSize = CGSize(width: 600, height: 1000)
-         let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
-         for i in 0..<5 {
-         self.weekController.load(profile: profile, ofWeek: self.foldWeek(week: self.weekController.getCurrentWeek() + i))
-         }
-         }*/
     }
 }
-
-
-/*
- 
- struct SwipeView: View {
- @State private var offset: CGFloat = 0
- @State private var index = 0
- 
- let users = [...]
- let spacing: CGFloat = 10
- 
- var body: some View {
- GeometryReader { geometry in
- return ScrollView(.horizontal, showsIndicators: true) {
- HStack(spacing: self.spacing) {
- ForEach(self.users) { user in
- UserView(userModel: user)
- .frame(width: geometry.size.width)
- }
- }
- }
- .content.offset(x: self.offset)
- .frame(width: geometry.size.width, alignment: .leading)
- .gesture(
- DragGesture()
- .onChanged({ value in
- self.offset = value.translation.width - geometry.size.width * CGFloat(self.index)
- })
- .onEnded({ value in
- if -value.predictedEndTranslation.width > geometry.size.width / 2, self.index < self.users.count - 1 {
- self.index += 1
- }
- if value.predictedEndTranslation.width > geometry.size.width / 2, self.index > 0 {
- self.index -= 1
- }
- withAnimation { self.offset = -(geometry.size.width + self.spacing) * CGFloat(self.index) }
- })
- )
- }
- }
- }
- 
- */
-
-
-
 
 struct HorizontalDatePicker : View {
     let dateNumberLimit: Int
@@ -618,48 +490,6 @@ struct HorizontalDatePicker : View {
     }
 }
 
-/* struct HorizontalWeekPicker: View {
- @EnvironmentObject var weekController: WeekController
- let weekLimit: Int
- @FetchRequest(entity: Profile.entity(), sortDescriptors: []) var profiles: FetchedResults<Profile>
- 
- func foldWeek(week: Int) -> Int {
- if (week > 52) {
- return week - 52
- }
- else {
- return week
- }
- }
- 
- func getTodayForegroundColor(current: Int, item: Int) -> Color {
- if (item == current) {
- return Color(UIColor.systemRed)
- }
- else {
- return Color(UIColor.label)
- }
- }
- 
- var body: some View {
- return ScrollView(.horizontal, showsIndicators: false) {
- HStack {
- ForEach(weekController.getCurrentWeek()..<weekController.getCurrentWeek() + weekLimit) { index in
- Button(action: {
- self.weekController.selectedWeek = self.foldWeek(week: index)
- self.weekController.load(profile: self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}))
- }) {
- VStack {
- Text("vecka").foregroundColor(Color(UIColor.secondaryLabel)).font(.caption)
- Text("\(self.foldWeek(week: index))").font(.callout).fontWeight(self.foldWeek(week: index) == self.weekController.selectedWeek ? .bold : .regular).foregroundColor(self.getTodayForegroundColor(current: self.weekController.getCurrentWeek(), item: self.foldWeek(week: index)))
- }.frame(width: 40).padding(10).background(self.foldWeek(week: index) == self.weekController.selectedWeek ? Color(UIColor.systemGray5) : Color(UIColor.systemGroupedBackground)).cornerRadius(15)
- }
- }
- }
- }
- }
- }
- */
 struct TodayView: View {
     @Binding var eventList: [Event]
     // @State var selectedDate: Date = Date()
