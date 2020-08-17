@@ -23,7 +23,6 @@
 		FF7934E724BA59AC00AACE0A /* schemaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF7934E624BA59AC00AACE0A /* schemaTests.swift */; };
 		FF7934F224BA59AC00AACE0A /* schemaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF7934F124BA59AC00AACE0A /* schemaUITests.swift */; };
 		FFA17EE924BBB4C300C383E5 /* TodayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFA17EE824BBB4C300C383E5 /* TodayController.swift */; };
-		FFE2115B23F53AA0006CA0F9 /* SchooList.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE2115A23F53AA0006CA0F9 /* SchooList.swift */; };
 		FFF13A2D24C597ED008F5CCD /* ProfileManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF13A2C24C597ED008F5CCD /* ProfileManagerView.swift */; };
 		FFF13A3124C59AAB008F5CCD /* WeekController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF13A3024C59AAB008F5CCD /* WeekController.swift */; };
 		FFF13A3324C8CD26008F5CCD /* FetchError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF13A3224C8CD26008F5CCD /* FetchError.swift */; };
@@ -76,7 +75,6 @@
 		FF7934F124BA59AC00AACE0A /* schemaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = schemaUITests.swift; sourceTree = "<group>"; };
 		FF7934F324BA59AC00AACE0A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FFA17EE824BBB4C300C383E5 /* TodayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayController.swift; sourceTree = "<group>"; };
-		FFE2115A23F53AA0006CA0F9 /* SchooList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchooList.swift; sourceTree = "<group>"; };
 		FFF13A2C24C597ED008F5CCD /* ProfileManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileManagerView.swift; sourceTree = "<group>"; };
 		FFF13A3024C59AAB008F5CCD /* WeekController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekController.swift; sourceTree = "<group>"; };
 		FFF13A3224C8CD26008F5CCD /* FetchError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchError.swift; sourceTree = "<group>"; };
@@ -172,7 +170,6 @@
 				FF448EBB24BF4B7600408A45 /* SchemaView.swift */,
 				FFF13A2C24C597ED008F5CCD /* ProfileManagerView.swift */,
 				FFF13A3224C8CD26008F5CCD /* FetchError.swift */,
-				FFE2115A23F53AA0006CA0F9 /* SchooList.swift */,
 			);
 			path = schema;
 			sourceTree = "<group>";
@@ -454,7 +451,6 @@
 			files = (
 				FF448EBA23EBF66A00408A45 /* NewProfileFlowView.swift in Sources */,
 				FF7934CD24BA59A600AACE0A /* AppDelegate.swift in Sources */,
-				FFE2115B23F53AA0006CA0F9 /* SchooList.swift in Sources */,
 				FFF13A2D24C597ED008F5CCD /* ProfileManagerView.swift in Sources */,
 				FF7934CF24BA59A600AACE0A /* SceneDelegate.swift in Sources */,
 				FFA17EE924BBB4C300C383E5 /* TodayController.swift in Sources */,
@@ -633,7 +629,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"schema/Preview Content\"";
 				DEVELOPMENT_TEAM = 3B37CNMVH7;
 				ENABLE_PREVIEWS = YES;
@@ -643,7 +639,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5;
+				MARKETING_VERSION = 2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema;
 				PRODUCT_NAME = Skolschema;
 				SWIFT_VERSION = 5.0;
@@ -657,7 +653,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"schema/Preview Content\"";
 				DEVELOPMENT_TEAM = 3B37CNMVH7;
 				ENABLE_PREVIEWS = YES;
@@ -667,7 +663,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5;
+				MARKETING_VERSION = 2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema;
 				PRODUCT_NAME = Skolschema;
 				SWIFT_VERSION = 5.0;

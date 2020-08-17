@@ -342,13 +342,21 @@ struct WeekView: View {
     }
     
     var body: some View {
+        ZStack {
         VStack {
-                HStack {
+                /*HStack {
                     Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").font(.title).bold()
                 }
-                Spacer()
+                */
+            Spacer()
                 if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
+                    VStack {
+                        HStack {
+                            Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").bold()
+                            Spacer()
+                        }
                     Image(uiImage: self.drawTimetable(timetableJson: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.timetableJson)).resizable().aspectRatio(contentMode: .fit).pinchToZoom()
+                    }.padding(25).background(Color(UIColor.secondarySystemGroupedBackground)).cornerRadius(20)
                 }
                 else {
                     Text("Laddar...")
@@ -363,7 +371,6 @@ struct WeekView: View {
                         Image(systemName: "arrow.left").font(Font.body.weight(.bold))
                     }.padding()
                     Spacer()
-                
                 Picker("Vecka", selection: $selection) {
                     if (self.selection < 0) {
                         Text("\(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").tag(self.selection)
@@ -382,12 +389,13 @@ struct WeekView: View {
                     if (self.oldSelection != value || !self.hasLoadedFirstTime) {
                         print("\(value)")
                         let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
-                        self.weekController.targetSize = CGSize(width: 600, height: 1000)
+                        self.weekController.targetSize = CGSize(width: 600 * 1.5, height: 600 * 1.5 * 1.41428571429)
                         self.weekController.load(profile: profile, ofWeek: self.foldWeek(week: self.weekController.getCurrentWeek() + value))
                         self.oldSelection = value
                         self.hasLoadedFirstTime = true
                     }
                 }
+                    
                 Spacer()
                     Button(action: {
                         self.selection += 1
@@ -401,7 +409,9 @@ struct WeekView: View {
                 self.hasLoadedFirstTime = false
                 self.lastUsedProfile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
             }
-        }/*.onAppear {
+        }
+        }.background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all))
+            /*.onAppear {
             self.weekController.timetableJsonWeekLoads = []
             self.hasLoadedFirstTime = false
         }*/

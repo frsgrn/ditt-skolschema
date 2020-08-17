@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import schema
+@testable import Ditt_Skolschema
 
 class schemaTests: XCTestCase {
 
