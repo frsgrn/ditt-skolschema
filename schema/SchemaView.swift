@@ -257,7 +257,7 @@ struct WeekView: View {
         let renderer = UIGraphicsImageRenderer(size: size)
         let img = renderer.image { ctx in
             
-            for text in timetableJson["boxList"].arrayValue {
+            for text in timetableJson["boxList"].arrayValue.reversed() {
                 if (text["type"].stringValue == "4") {
                     ctx.cgContext.setStrokeColor(UIColor.secondaryLabel.cgColor)
                     ctx.cgContext.setFillColor(UIColor.systemGroupedBackground.cgColor)
@@ -268,6 +268,7 @@ struct WeekView: View {
             
             
             for text in timetableJson["boxList"].arrayValue {
+                //print("\(text["type"].stringValue) - \(text["bcolor"].stringValue)")
                 if (text["type"].stringValue == "3") {
                     ctx.cgContext.setFillColor(UIColor.systemGroupedBackground.cgColor)
                     ctx.cgContext.addRect(CGRect(x: text["x"].int!, y: text["y"].int!, width: text["width"].int!, height: text["height"].int!))
@@ -333,19 +334,19 @@ struct WeekView: View {
                  Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").font(.title).bold()
                  }
                  */
-                Spacer()
-                if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
-                    VStack {
-                        HStack {
-                            Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").bold()
-                            Spacer()
-                        }
-                        Image(uiImage: self.drawTimetable(timetableJson: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.timetableJson)).resizable().aspectRatio(contentMode: .fit).pinchToZoom()
-                    }.padding(25).background(Color(UIColor.secondarySystemGroupedBackground)).cornerRadius(20)
-                }
-                else {
-                    Text("Laddar...")
-                }
+                    if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
+                        VStack {
+                            HStack {
+                                Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").font(.title).bold()
+                                Spacer()
+                            }
+                            Image(uiImage: self.drawTimetable(timetableJson: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.timetableJson)).resizable().aspectRatio(contentMode: .fit).pinchToZoom()
+                        }.padding(25).background(Color(UIColor.secondarySystemGroupedBackground)).cornerRadius(20)
+                    }
+                    else {
+                        Spacer()
+                        Text("Laddar...")
+                    }
                 
                 Spacer()
                 HStack {
@@ -391,13 +392,14 @@ struct WeekView: View {
                 
                 
                 
-            }.padding(10).onAppear {
+            }.padding(15).onAppear {
                 if (self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}) != self.lastUsedProfile) {
                     self.weekController.timetableJsonWeekLoads = []
                     self.hasLoadedFirstTime = false
                     self.lastUsedProfile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
                 }
             }
+            
         }.background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all))
     }
 }
