@@ -334,9 +334,10 @@ struct WeekView: View {
                  Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").font(.title).bold()
                  }
                  */
+                if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
+
                 ScrollView {
                     Group {
-                    if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
                         VStack {
                             HStack {
                                 Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").font(.title).bold()
@@ -344,18 +345,21 @@ struct WeekView: View {
                             }
                             Image(uiImage: self.drawTimetable(timetableJson: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.timetableJson)).resizable().aspectRatio(contentMode: .fit).pinchToZoom()
                         }.padding(25).background(Color(UIColor.secondarySystemGroupedBackground)).cornerRadius(20)
-                    }
-                    else {
-                        Spacer()
-                        HStack {
-                            Spacer()
-                            Text("Laddar...")
-                            Spacer()
-                        }
-                    }
+                    
                     }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
 
                 }
+                    }
+                    else {
+                        Spacer()
+                        HStack(alignment: .center) {
+                            Spacer()
+                                Text("Laddar...")
+                            Spacer()
+                        }
+                    }
+                
+                
                 Spacer()
                 HStack {
                     Button(action: {
@@ -487,7 +491,7 @@ struct HorizontalDatePicker : View {
                         VStack {
                             Text(self.getDayNameOfDate(date: self.addDaysToCalendar(num: index))).foregroundColor(Color(UIColor.secondaryLabel)).font(.caption).padding(EdgeInsets(top: 0, leading: 0, bottom: 7, trailing: 0))
                             Text(self.getDayOfDate(date: self.addDaysToCalendar(num: index))).fontWeight(self.selection == index ? .bold : .regular).padding(10).background(self.getSelectedBackgroundColor(index: index, selected: self.selection)).clipShape(Circle()).foregroundColor(self.getSelectedForegroundColor(index: index, selected: self.selection))
-                        }.frame(width: 60)//.background(self.getSelectedBackgroundColor(index: index, selected: self.selection)).cornerRadius(15)
+                            }.frame(width: 60)//.background(self.getSelectedBackgroundColor(index: index, selected: self.selection)).cornerRadius(15)
                     }
                 }
                 Spacer()
