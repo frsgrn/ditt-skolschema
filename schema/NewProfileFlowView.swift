@@ -77,7 +77,7 @@ struct ChooseSelection: View {
     
     @State var idInput = ""
     
-    let options = ["klass", "lärare", "id"]
+    let options = ["Klass", "Lärare", "Eget"]
     
     func fetch() {
         Skola24Wrapper.getClasses(school: self.school) { (classes, fetchError) in
@@ -131,7 +131,7 @@ struct ChooseSelection: View {
     }
     
     var body: some View {
-        List {
+        Group {
             Picker("Välj", selection: $selection) {
                 ForEach(0..<options.count) { i in
                     Text("\(self.options[i])").tag(i)
@@ -139,6 +139,7 @@ struct ChooseSelection: View {
             }.pickerStyle(SegmentedPickerStyle())
             
             if (selection == 0) {
+                List {
                 ForEach(self.classes, id: \.id) { s24_class in
                     Button(action: {
                         self.addClassProfile(s24_class: s24_class)
@@ -148,8 +149,10 @@ struct ChooseSelection: View {
                         }
                     }
                 }
+                }
             }
             else if (selection == 1) {
+                List {
                 ForEach(self.teachers, id: \.id) { teacher in
                     Button(action: {
                         self.addTeacherProfile(teacher: teacher)
@@ -162,12 +165,17 @@ struct ChooseSelection: View {
                         }
                     }
                 }
+                }
             }
             else if (selection == 2) {
-                TextField("Personnummer/id", text: self.$idInput)
+                List {
+                    Section(header: Text("Välj ditt personliga schema")) {
+                TextField("Personnummer/id...", text: self.$idInput)
                 Button("Lägg till") {
                     self.addIdProfile(id: self.idInput)
                 }
+                    }
+                }.listStyle(GroupedListStyle())
             }
         }.onAppear(perform: fetch).navigationBarTitle("Välj schema från")
     }

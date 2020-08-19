@@ -1112,31 +1112,4 @@ class Skola24Wrapper{
         }
         }
     }
-    
-    static func index() {
-        // var schoolList: [School] = []
-        /*self.domainList.forEach { domain in
-            getSchools(hostName: domain.url) { (schools, fetchError) in
-                if (fetchError == nil) {
-                    (schools ?? []).forEach { school in
-                        //print("Checking")
-                        //print(school.unitId)
-                        //print(schoolList.count)
-                        //School(unitGuid: "hello", unitId: "hello", hostName: "lulea.skola24.se")
-                        //
-                        getClasses(school: school) { (classes, fetchError) in
-                            print("hello")
-                            if (fetchError == nil) {
-                                if ((classes ?? []).count > 0) {
-                                    schoolList.append(school)
-                                    print("Scool(unitGuid: \"\(school.unitGuid)\", unitId: \"\(school.unitId)\", hostName: \"\(school.hostName)\"),")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
- */
-    }
 }

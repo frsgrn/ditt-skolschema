@@ -97,8 +97,15 @@ class WeekController: ObservableObject {
     }
     
     func getCurrentWeek() -> Int {
-        let calendar = NSCalendar.current
+        /*let calendar = NSCalendar.current
         let component = calendar.component(.weekOfYear, from: Date())
+        return component*/
+        return WeekController.getWeekFrom(date: Date())
+    }
+    
+    static func getWeekFrom(date: Date) -> Int {
+        let calendar = NSCalendar.current
+        let component = calendar.component(.weekOfYear, from: date)
         return component
     }
     

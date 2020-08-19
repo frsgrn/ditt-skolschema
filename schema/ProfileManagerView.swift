@@ -39,6 +39,7 @@ struct ProfileManagerView: View {
         UserDefaults.standard.set(self.selectedProfileId, forKey: "selectedProfileId")
         self.todayController.load(profile: profile)
         self.weekController.timetableJsonWeekLoads = []
+        self.todayController.timetableObjectLoads = []
     }
     
     var body: some View {

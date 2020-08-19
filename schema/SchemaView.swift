@@ -334,6 +334,8 @@ struct WeekView: View {
                  Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").font(.title).bold()
                  }
                  */
+                ScrollView {
+                    Group {
                     if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
                         VStack {
                             HStack {
@@ -345,9 +347,15 @@ struct WeekView: View {
                     }
                     else {
                         Spacer()
-                        Text("Laddar...")
+                        HStack {
+                            Spacer()
+                            Text("Laddar...")
+                            Spacer()
+                        }
                     }
-                
+                    }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+
+                }
                 Spacer()
                 HStack {
                     Button(action: {
@@ -479,7 +487,7 @@ struct HorizontalDatePicker : View {
                         VStack {
                             Text(self.getDayNameOfDate(date: self.addDaysToCalendar(num: index))).foregroundColor(Color(UIColor.secondaryLabel)).font(.caption).padding(EdgeInsets(top: 0, leading: 0, bottom: 7, trailing: 0))
                             Text(self.getDayOfDate(date: self.addDaysToCalendar(num: index))).fontWeight(self.selection == index ? .bold : .regular).padding(10).background(self.getSelectedBackgroundColor(index: index, selected: self.selection)).clipShape(Circle()).foregroundColor(self.getSelectedForegroundColor(index: index, selected: self.selection))
-                        }.frame(width: 55).padding(5)//.background(self.getSelectedBackgroundColor(index: index, selected: self.selection)).cornerRadius(15)
+                        }.frame(width: 60)//.background(self.getSelectedBackgroundColor(index: index, selected: self.selection)).cornerRadius(15)
                     }
                 }
                 Spacer()
@@ -505,9 +513,13 @@ struct TodayView: View {
                     Text("\(todayController.assistantMessage())")
                         .font(.system(size: 20)).bold()
                 }.padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15))
-                if (eventList.count > 0) {
+                
+                
+                
+                /*if (self.todayController.getSelectedEventList().count > 0) {
                     ScrollView(.vertical) {
-                        SchemaCardStack(eventList: self.$eventList)
+                        //SchemaCardStack(eventList: self.$eventList)
+                        SchemaCardStack()//.environmentObject(todayController)
                     }
                 }
                 else {
@@ -516,7 +528,7 @@ struct TodayView: View {
                         VStack {
                             HStack {
                                 Spacer()
-                                if (self.todayController.fetchError == nil) {
+                                if (self.todayController.getTimetableObjectLoadFromDate(date: self.todayController.selectedDate).fetchError == nil) {
                                     Text("Ingenting för idag, se fliken Veckan för en översikt.")
                                 }
                                 else {
@@ -528,22 +540,45 @@ struct TodayView: View {
                     }
                     Spacer()
                 }
+                */
+                if (self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate) != nil) {
+                    if (self.todayController.getSelectedEventList().count > 0) {
+                        ScrollView(.vertical) {
+                            //SchemaCardStack(eventList: self.$eventList)
+                            SchemaCardStack()//.environmentObject(todayController)
+                        }
+                    }
+                    else if (self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate)!.fetchError != nil) {
+                        Text(self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate)!.fetchError!.message).foregroundColor(Color(UIColor.red)).padding()
+                        Spacer()
+                    }
+                    else {
+                        Text("Ingenting för idag, se fliken veckan för en översikt.").padding()
+                        Spacer()
+                    }
+                }
+                else {
+                    Text("Vänta medans appen läser in ditt schema...").padding()
+                    Spacer()
+                }
+                
+                
             }
         }.background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all))
     }
 }
 
 struct SchemaCardStack: View {
-    @Binding var eventList: [Event]
+    //@Binding var eventList: [Event]
+    @EnvironmentObject var todayController: TodayController
     var body: some View {
         VStack {
-            ForEach(eventList.indices, id: \.self) { index in
-                
+            ForEach(self.todayController.getSelectedEventList().indices, id: \.self) { index in
                 Group {
-                    SchemaCard(event: self.eventList[index])
-                    if (self.eventList.indices.contains(index + 1)) {
-                        if (self.shouldUseRecess(end: self.eventList[index].end, start: self.eventList[index + 1].start)) {
-                            Recess(previous: self.eventList[index], next: self.eventList[index + 1])
+                    SchemaCard(event: self.todayController.getSelectedEventList()[index])
+                    if (self.todayController.getSelectedEventList().indices.contains(index + 1)) {
+                        if (self.shouldUseRecess(end: self.todayController.getSelectedEventList()[index].end, start: self.todayController.getSelectedEventList()[index + 1].start)) {
+                            Recess(previous: self.todayController.getSelectedEventList()[index], next: self.todayController.getSelectedEventList()[index + 1])
                         }
                         else {
                             Spacer()

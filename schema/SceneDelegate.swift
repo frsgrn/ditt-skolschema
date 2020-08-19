@@ -35,7 +35,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.makeKeyAndVisible()
         }
         todayController.startTimedDateFetch()
-        Skola24Wrapper.index()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
