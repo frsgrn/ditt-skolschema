@@ -557,12 +557,12 @@ struct TodayView: View {
                         Spacer()
                     }
                     else {
-                        Text("Ingenting för idag, se fliken veckan för en översikt.").padding()
+                        Text("Ingenting för idag, se fliken \"Veckan\" för en översikt.").padding()
                         Spacer()
                     }
                 }
                 else {
-                    Text("Vänta medans appen läser in ditt schema...").padding()
+                    Text("Vänta tills appen har läst in ditt schema...").padding()
                     Spacer()
                 }
                 
@@ -638,7 +638,7 @@ struct Recess: View {
     var body: some View {
         HStack {
             Image(systemName: "arrow.down")
-            Text("rast i \(TodayController.getMinutesFromDates(from: previous.end, to: next.start)) minuter").font(.footnote)
+            Text("rast i \(TodayController.minutesToHourMinuteString(minutes: TodayController.getMinutesFromDates(from: previous.end, to: next.start)))").font(.footnote)
         }.foregroundColor(self.todayDelegate.isActive(from: previous.end, to: next.start) ? Color(UIColor.systemBlue) : Color(UIColor.secondaryLabel)).padding(.bottom, 2)
     }
 }

@@ -151,10 +151,33 @@ class TodayController: ObservableObject {
         return timetableObjectLoad
     }
     
-    
-    
     func startTimedDateFetch() {
-        Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in self.currentDate = Date() }
+        Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+            self.currentDate = Date()
+            
+        }
+    }
+    
+    static func minutesToHourMinuteString(minutes: Int) -> String {
+        let hours: Int = minutes / 60; //since both are ints, you get an int
+        let minutes: Int = minutes % 60;
+        var hoursString = ""
+        var minutesString = ""
+        if (hours > 0) {
+            if (hours == 1) {
+                hoursString = "\(hours) timma och "
+            }
+            else {
+                hoursString = "\(hours) timmar och "
+            }
+        }
+        if (minutes == 1) {
+            minutesString = "\(minutes) minut"
+        }
+        else {
+            minutesString = "\(minutes) minuter"
+        }
+        return hoursString + minutesString
     }
     
     func assistantMessage() -> String {
@@ -172,20 +195,20 @@ class TodayController: ObservableObject {
         
         for (_, event) in guardedTimetableObject.eventList.enumerated() {
             if (isActive(from: event.start, to: event.end)) {
-                return "\(event.title) just nu, \(TodayController.getMinutesFromDates(from: selectedDate, to: event.end)) minuter kvar"
+                return "\(event.title) just nu, \(TodayController.minutesToHourMinuteString(minutes:TodayController.getMinutesFromDates(from: self.currentDate, to: event.end))) kvar"
             }
         }
         
         for (index, event) in guardedTimetableObject.eventList.enumerated() {
             if (guardedTimetableObject.eventList.indices.contains(index + 1)) {
                 if (isActive(from: event.end, to: guardedTimetableObject.eventList[index + 1].start)) {
-                    return "Du har rast just nu, \(guardedTimetableObject.eventList[index + 1].title) om \(TodayController.getMinutesFromDates(from: selectedDate, to: guardedTimetableObject.eventList[index + 1].start)) minuter"
+                    return "Du har rast just nu, \(guardedTimetableObject.eventList[index + 1].title) om \(TodayController.minutesToHourMinuteString(minutes: TodayController.getMinutesFromDates(from: self.currentDate, to: guardedTimetableObject.eventList[index + 1].start)))"
                 }
             }
         }
         
         if (guardedTimetableObject.eventList.indices.contains(0)) {
-            if (currentDate < guardedTimetableObject.eventList[0].start) {
+            if (self.currentDate < guardedTimetableObject.eventList[0].start) {
                 return "\(guardedTimetableObject.eventList[0].title) klockan \(Event.getHourMinuteString(date: guardedTimetableObject.eventList[0].start)) är första lektionen du har idag"
             }
         }

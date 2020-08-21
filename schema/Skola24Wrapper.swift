@@ -976,7 +976,8 @@ class Skola24Wrapper{
                 "startDate": Timeframe.formatDateToString(date: timeframe.start),
                 "endDate": Timeframe.formatDateToString(date: timeframe.end),
                 "height": 700,
-                "width": 732,
+                //"width": 732,
+                "width": 1200,
                 "renderKey": key,
                 "host": school.hostName,
                 "periodText": "Period text",
@@ -1008,6 +1009,11 @@ class Skola24Wrapper{
                     return (u1["y"], u1["x"]) < (u2["y"], u2["x"])
                 }
                 
+                /*var sortedTimetable = filteredTimetable.sorted { u1, u2 in
+                    //return (u1["y"], u1["x"]) < (u2["y"], u2["x"])
+                    return u1["y"] > u2["y"]
+                }*/
+                
                 sortedTimetable.removeFirst(1)
                 var eventList: [Event] = []
                 
@@ -1033,7 +1039,7 @@ class Skola24Wrapper{
                                     //working.end = TodayDelegate.newDateFromHourMinuteString(hourMinuteString: drawText["text"].rawString()!)
                                     continue
                                 }
-                                else if (drawText["x"].intValue > box["x"].intValue + 5 && endDateY == -1 && startDateY < drawText["y"].intValue) {
+                                else if (drawText["x"].intValue > box["x"].intValue + 5 /*&& endDateY == -1 && startDateY < drawText["y"].intValue*/) {
                                     endDateY = drawText["y"].intValue
                                     working.end = TodayController.newDateFromHourMinuteString(hourMinuteString: drawText["text"].rawString()!, from: selectedDate)
                                     working.hasEnd = true
@@ -1053,9 +1059,6 @@ class Skola24Wrapper{
                 }
                 
                 for index in 0..<eventList.count {
-                    print(eventList[index].title)
-                    print(eventList[index].hasStart)
-                    print(eventList[index].hasEnd)
                     
                     /* if (!eventList[index].hasEnd && !eventList[index].hasStart) {
                         print("Found event with no start and no end")
@@ -1097,9 +1100,6 @@ class Skola24Wrapper{
                     
                 // }
                 for index in 0..<eventList.count {
-                print(eventList[index].title)
-                print(eventList[index].hasStart)
-                print(eventList[index].hasEnd)
                 }
                 eventList = eventList.filter {!$0.title.lowercased().contains("lunch")}
                 eventList = eventList.sorted {
