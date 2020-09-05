@@ -12,13 +12,30 @@ struct ChooseDomain: View {
     @Binding var showingDetail: Bool
     @State private var searchField: String = ""
     
-    @State private var results: [Domain] = []
+    @State private var searchResults: [Domain] = []
+    
+    func getSearchResults () -> [Domain] {
+        if (self.searchField == "") {
+            return Skola24Wrapper.domainList
+        }
+        else {
+            DispatchQueue.main.async {
+                self.searchResults = Skola24Wrapper.domainList.filter {$0.name.lowercased().contains(self.filterPrivateChars(from:self.searchField.lowercased()))}
+            }
+            return self.searchResults
+        }
+    }
+    
+    func filterPrivateChars(from: String) -> String {
+        let newString = from.replacingOccurrences(of: "å", with: "a").replacingOccurrences(of: "ä", with: "a").replacingOccurrences(of: "ö", with: "o")
+        return newString
+    }
     
     var body: some View {
         VStack {
+            SearchBar(text: $searchField, placeholder: "Sök bland domäner")
         List {
-            Section(header: Text("Domäner i alfabetisk ordning")) {
-                ForEach(Skola24Wrapper.domainList, id: \.id) { domain in
+                ForEach(getSearchResults(), id: \.id) { domain in
                     Group {
                         //if (self.isMatching(domain: domain)) {
                         NavigationLink(destination: ChooseSchool(showingDetail: self.$showingDetail, domain: domain)) {
@@ -29,7 +46,6 @@ struct ChooseDomain: View {
                     //}
                     }
                 }
-            }
             
             }.navigationBarTitle("Välj domän", displayMode: .inline)
     }
@@ -98,7 +114,6 @@ struct ChooseSelection: View {
         profile.subTitle = school.unitId
         try? self.moc.save()
         self.showingDetail = false
-        UserDefaults.standard.set(profile.id?.uuidString, forKey: "selectedProfileId")
     }
     
     func addTeacherProfile(teacher: Teacher) {
@@ -180,11 +195,11 @@ struct ChooseSelection: View {
         }.onAppear(perform: fetch).navigationBarTitle("Välj schema från")
     }
 }
-/*
 
 struct SearchBar: UIViewRepresentable {
 
     @Binding var text: String
+    var placeholder: String
 
     class Coordinator: NSObject, UISearchBarDelegate {
 
@@ -196,23 +211,32 @@ struct SearchBar: UIViewRepresentable {
 
         func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
             text = searchText
+            searchBar.showsCancelButton = true
+        }
+        
+        func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+            text = ""
+            searchBar.showsCancelButton = false
+            searchBar.endEditing(true)
+            
         }
     }
 
-    func makeCoordinator() -> Coordinator {
+    func makeCoordinator() -> SearchBar.Coordinator {
         return Coordinator(text: $text)
     }
 
     func makeUIView(context: UIViewRepresentableContext<SearchBar>) -> UISearchBar {
         let searchBar = UISearchBar(frame: .zero)
         searchBar.delegate = context.coordinator
+        searchBar.placeholder = placeholder
+        searchBar.searchBarStyle = .minimal
+        searchBar.autocapitalizationType = .none
+        searchBar.showsCancelButton = false
         return searchBar
     }
 
-    func updateUIView(_ uiView: UISearchBar,
-                      context: UIViewRepresentableContext<SearchBar>) {
+    func updateUIView(_ uiView: UISearchBar, context: UIViewRepresentableContext<SearchBar>) {
         uiView.text = text
     }
 }
-
- */

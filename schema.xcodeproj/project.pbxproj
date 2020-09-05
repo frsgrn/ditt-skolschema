@@ -14,6 +14,7 @@
 		FF448EBC24BF4B7600408A45 /* SchemaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF448EBB24BF4B7600408A45 /* SchemaView.swift */; };
 		FF5718CC24BA923800B72D62 /* Skola24Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5718CB24BA923800B72D62 /* Skola24Wrapper.swift */; };
 		FF5B002B24ECF7B700E2805F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF5B002A24ECF7B700E2805F /* GoogleService-Info.plist */; };
+		FF5F81EB24FA6CBC0014A17A /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5F81EA24FA6CBC0014A17A /* ProfileController.swift */; };
 		FF7934CD24BA59A600AACE0A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF7934CC24BA59A600AACE0A /* AppDelegate.swift */; };
 		FF7934CF24BA59A600AACE0A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF7934CE24BA59A600AACE0A /* SceneDelegate.swift */; };
 		FF7934D224BA59A600AACE0A /* schema.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FF7934D024BA59A600AACE0A /* schema.xcdatamodeld */; };
@@ -61,6 +62,7 @@
 		FF5718CB24BA923800B72D62 /* Skola24Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skola24Wrapper.swift; sourceTree = "<group>"; };
 		FF5B002924E9D02A00E2805F /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		FF5B002A24ECF7B700E2805F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FF5F81EA24FA6CBC0014A17A /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		FF7934C924BA59A600AACE0A /* Skolschema.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skolschema.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF7934CC24BA59A600AACE0A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FF7934CE24BA59A600AACE0A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 			children = (
 				FFA17EE824BBB4C300C383E5 /* TodayController.swift */,
 				FFF13A3024C59AAB008F5CCD /* WeekController.swift */,
+				FF5F81EA24FA6CBC0014A17A /* ProfileController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -464,6 +467,7 @@
 				FF7934D224BA59A600AACE0A /* schema.xcdatamodeld in Sources */,
 				FF448EBC24BF4B7600408A45 /* SchemaView.swift in Sources */,
 				FFF13A3324C8CD26008F5CCD /* FetchError.swift in Sources */,
+				FF5F81EB24FA6CBC0014A17A /* ProfileController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -633,7 +637,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"schema/Preview Content\"";
 				DEVELOPMENT_TEAM = 3B37CNMVH7;
 				ENABLE_PREVIEWS = YES;
@@ -643,7 +647,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.9.2;
+				MARKETING_VERSION = 2.10.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema;
 				PRODUCT_NAME = Skolschema;
 				SWIFT_VERSION = 5.0;
@@ -657,7 +661,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"schema/Preview Content\"";
 				DEVELOPMENT_TEAM = 3B37CNMVH7;
 				ENABLE_PREVIEWS = YES;
@@ -667,7 +671,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.9.2;
+				MARKETING_VERSION = 2.10.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema;
 				PRODUCT_NAME = Skolschema;
 				SWIFT_VERSION = 5.0;

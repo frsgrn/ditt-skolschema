@@ -36,7 +36,7 @@ struct ProfileManagerView: View {
     func selectProfile(profile: Profile) {
         let id:UUID = profile.id!
         self.selectedProfileId = id.uuidString
-        UserDefaults.standard.set(self.selectedProfileId, forKey: "selectedProfileId")
+        ProfileController.setProfile(profile: profile)
         self.todayController.load(profile: profile)
         self.weekController.timetableJsonWeekLoads = []
         self.todayController.timetableObjectLoads = []

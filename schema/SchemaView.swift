@@ -197,9 +197,6 @@ struct SchemaView: View {
                 }
             }
             .tag(2)
-        }.onAppear {
-            self.todayController.load(profile: self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}))
-            
         }
     }
 }
@@ -256,30 +253,31 @@ struct WeekView: View {
         let size = self.weekController.targetSize
         let renderer = UIGraphicsImageRenderer(size: size)
         let img = renderer.image { ctx in
-            
-            for text in timetableJson["boxList"].arrayValue.reversed() {
-                if (text["type"].stringValue == "4") {
-                    ctx.cgContext.setStrokeColor(UIColor.secondaryLabel.cgColor)
-                    ctx.cgContext.setFillColor(UIColor.systemGroupedBackground.cgColor)
-                    ctx.cgContext.addRect(CGRect(x: text["x"].int!, y: text["y"].int!, width: text["width"].int!, height: text["height"].int!))
-                }
+            var sortedTimetable = timetableJson["boxList"].arrayValue
+            sortedTimetable.sort {
+                Int($0["type"].stringValue)! > Int($1["type"].stringValue)!
             }
-            ctx.cgContext.drawPath(using: .fillStroke)
-            
-            
-            for text in timetableJson["boxList"].arrayValue {
-                //print("\(text["type"].stringValue) - \(text["bcolor"].stringValue)")
-                if (text["type"].stringValue == "3") {
-                    ctx.cgContext.setFillColor(UIColor.systemGroupedBackground.cgColor)
-                    ctx.cgContext.addRect(CGRect(x: text["x"].int!, y: text["y"].int!, width: text["width"].int!, height: text["height"].int!))
-                }
+            for text in sortedTimetable {
+                // if (text["type"].stringValue == "4") {
+                ctx.cgContext.setStrokeColor(hexStringToUIColor(hex: text["fcolor"].stringValue).cgColor)
+                // ctx.cgContext.setFillColor(UIColor.systemGroupedBackground.cgColor)
+                ctx.cgContext.setFillColor(hexStringToUIColor(hex: text["bcolor"].stringValue).cgColor)
+                ctx.cgContext.addRect(CGRect(x: text["x"].int!, y: text["y"].int!, width: text["width"].int!, height: text["height"].int!))
+                ctx.cgContext.drawPath(using: .fillStroke)
+                // }
             }
-            ctx.cgContext.drawPath(using: .fill)
             
             
-            
-            
-            
+            /*
+             
+             for text in timetableJson["boxList"].arrayValue {
+             if (text["type"].stringValue == "3") {
+             ctx.cgContext.setFillColor(UIColor.systemGroupedBackground.cgColor)
+             ctx.cgContext.addRect(CGRect(x: text["x"].int!, y: text["y"].int!, width: text["width"].int!, height: text["height"].int!))
+             }
+             }
+             ctx.cgContext.drawPath(using: .fill)
+             */
             
             for text in timetableJson["textList"].arrayValue {
                 let paragraphStyle = NSMutableParagraphStyle()
@@ -288,12 +286,11 @@ struct WeekView: View {
                 let attrs: [NSAttributedString.Key: Any] = [
                     .font: (text["bold"].boolValue ? UIFont.boldSystemFont(ofSize: CGFloat(text["fontsize"].floatValue)) : UIFont.systemFont(ofSize: CGFloat(text["fontsize"].floatValue))),
                     .paragraphStyle: paragraphStyle,
-                    .foregroundColor: UIColor.label//hexStringToUIColor(hex: text["fcolor"].stringValue)
+                    .foregroundColor: hexStringToUIColor(hex: text["fcolor"].stringValue)
                 ]
                 
                 let string = text["text"].stringValue
                 let attributedString = NSAttributedString(string: string, attributes: attrs)
-                
                 attributedString.draw(with: CGRect(x: CGFloat(text["x"].int!), y: CGFloat(text["y"].int!), width: attributedString.size().width, height: attributedString.size().height), options: .usesLineFragmentOrigin, context: nil)
             }
         }
@@ -301,22 +298,12 @@ struct WeekView: View {
         return img
     }
     
-    
-    @State private var offset: CGFloat = 0
-    //@State private var index = 0
-    @State private var showingDetail = false
-    @State private var selectedTimetableJsonWeekLoad: TimetableJsonWeekLoad? = nil
-    
     @State private var selection = 0
     @State private var oldSelection = 0
     @State private var hasLoadedFirstTime = false
     @State private var lastUsedProfile: Profile? = nil
     
     private var standardWeekNumLimit = 4
-    
-    @GestureState var scale: CGFloat = 1.0
-    
-    @State private var isShareSheetShowing = false
     
     let spacing: CGFloat = 20
     
@@ -327,46 +314,44 @@ struct WeekView: View {
     var body: some View {
         
         ZStack {
-            
-            
             VStack {
-                /*HStack {
-                 Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").font(.title).bold()
-                 }
-                 */
-                if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
-
-                ScrollView {
                     Group {
-                        VStack {
-                            HStack {
-                                Text("Vecka \(self.foldWeek(week: self.weekController.getCurrentWeek() + selection))").font(.title).bold()
+                        if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
+                            ScrollView {
+                                Group {
+                                    HStack {
+                                        Text("Vecka \(self.getSelectedWeek())").font(.title).bold()
+                                        Spacer()
+                                    }
+                                    Image(uiImage: self.drawTimetable(timetableJson: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.timetableJson))
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .pinchToZoom()
+                                    .if(self.colorScheme == .dark) { view in
+                                        view.colorInvert()
+                                    }
+                                }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+                                
+                            }
+                        }
+                        else {
+                            Spacer()
+                            HStack(alignment: .center) {
+                                Spacer()
+                                Text("Laddar...")
                                 Spacer()
                             }
-                            Image(uiImage: self.drawTimetable(timetableJson: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.timetableJson)).resizable().aspectRatio(contentMode: .fit).pinchToZoom()
-                        }.padding(25).background(Color(UIColor.secondarySystemGroupedBackground)).cornerRadius(20)
-                    
-                    }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
-
-                }
-                    }
-                    else {
-                        Spacer()
-                        HStack(alignment: .center) {
-                            Spacer()
-                                Text("Laddar...")
-                            Spacer()
                         }
+                        
                     }
-                
                 
                 Spacer()
                 HStack {
                     Button(action: {
-                        self.selection -= 1
+                            self.selection -= 1
+                        
                     }) {
-                        // Text("Förra")
-                        Image(systemName: "arrow.left").font(Font.body.weight(.bold))
+                        Image(systemName: "calendar.badge.minus")
                     }.padding()
                     Spacer()
                     Picker("Vecka", selection: $selection) {
@@ -387,7 +372,6 @@ struct WeekView: View {
                         if (self.oldSelection != value || !self.hasLoadedFirstTime) {
                             print("\(value)")
                             let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
-                            self.weekController.targetSize = CGSize(width: 600 * 1.5, height: 600 * 1.5 * 1.41428571429)
                             self.weekController.load(profile: profile, ofWeek: self.foldWeek(week: self.weekController.getCurrentWeek() + value))
                             self.oldSelection = value
                             self.hasLoadedFirstTime = true
@@ -396,109 +380,20 @@ struct WeekView: View {
                     
                     Spacer()
                     Button(action: {
-                        self.selection += 1
+                            self.selection += 1
                     }) {
-                        Image(systemName: "arrow.right").font(Font.body.weight(.bold))
+                        Image(systemName: "calendar.badge.plus")
                     }.padding()
                 }
                 
                 
                 
-            }.padding(15).onAppear {
-                if (self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}) != self.lastUsedProfile) {
-                    self.weekController.timetableJsonWeekLoads = []
-                    self.hasLoadedFirstTime = false
-                    self.lastUsedProfile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
-                }
-            }
-            
-        }.background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all))
-    }
-}
-
-struct HorizontalDatePicker : View {
-    let dateNumberLimit: Int
-    @State var selection: Int = 0
-    @EnvironmentObject var todayController: TodayController
-    @FetchRequest(entity: Profile.entity(), sortDescriptors: []) var profiles: FetchedResults<Profile>
-    
-    
-    func addDaysToCalendar(num: Int) -> Date {
-        let currentDate = Date()
-        var dateComponent = DateComponents()
-        dateComponent.day = num
-        let futureDate = Calendar.current.date(byAdding: dateComponent, to: currentDate)
-        return futureDate!
-    }
-    
-    func getDayNameOfDate(date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EE"
-        dateFormatter.locale =  Locale(identifier: "sv_SE")
-        let dayInWeek = dateFormatter.string(from: date)
-        return dayInWeek
-    }
-    
-    func getDayOfDate(date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd"
-        let dayInWeek = dateFormatter.string(from: date)
-        return dayInWeek
-    }
-    
-    func getSelectedBackgroundColor(index: Int, selected: Int) -> Color {
-        if (index == selected) {
-            return Color(UIColor.systemBlue)
-        }
-        else if (index == 0) {
-            return Color(UIColor.systemGray5)
-        }
-        else {
-            return Color(UIColor.white).opacity(0)
-        }
-    }
-    
-    func getTodayForegroundColor(index: Int) -> Color {
-        if (index == 0) {
-            return Color(UIColor.systemBlue)
-            // return Color(UIColor.systemRed)
-        }
-        else {
-            return Color(UIColor.black).opacity(0)
-            // return Color(UIColor.label)
-        }
-    }
-    
-    func getSelectedForegroundColor(index: Int, selected: Int) -> Color {
-        if (index == selected) {
-            return Color(UIColor.white)
-        }
-        else {
-            return Color(UIColor.label)
-        }
-    }
-    
-    var body: some View {
-        return ScrollView(.horizontal, showsIndicators: false) {
-            HStack {
-                Spacer()
-                ForEach(0..<dateNumberLimit) { index in
-                    Button(action: {
-                        self.selection = index
-                        self.todayController.selectedDate = self.addDaysToCalendar(num: index)
-                        self.todayController.load(profile: self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}))
-                    }) {
-                        VStack {
-                            Text(self.getDayNameOfDate(date: self.addDaysToCalendar(num: index))).foregroundColor(Color(UIColor.secondaryLabel)).font(.caption).padding(EdgeInsets(top: 0, leading: 0, bottom: 7, trailing: 0))
-                            Text(self.getDayOfDate(date: self.addDaysToCalendar(num: index))).fontWeight(self.selection == index ? .bold : .regular).padding(10).background(self.getSelectedBackgroundColor(index: index, selected: self.selection)).clipShape(Circle()).foregroundColor(self.getSelectedForegroundColor(index: index, selected: self.selection))
-                            }.frame(width: 60)//.background(self.getSelectedBackgroundColor(index: index, selected: self.selection)).cornerRadius(15)
-                    }
-                }
-                Spacer()
-            }.onAppear {
-                self.selection = 0
-                self.todayController.selectedDate = self.todayController.currentDate
-                self.todayController.load(profile: self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}))
+            }.padding(15)
+        }.background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all)).onAppear {
+            if (self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}) != self.lastUsedProfile) {
+                self.weekController.timetableJsonWeekLoads = []
+                self.hasLoadedFirstTime = false
+                self.lastUsedProfile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
             }
         }
     }
@@ -506,7 +401,6 @@ struct HorizontalDatePicker : View {
 
 struct TodayView: View {
     @Binding var eventList: [Event]
-    // @State var selectedDate: Date = Date()
     @EnvironmentObject var todayController: TodayController
     
     var body: some View {
@@ -517,39 +411,10 @@ struct TodayView: View {
                     Text("\(todayController.assistantMessage())")
                         .font(.system(size: 20)).bold()
                 }.padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15))
-                
-                
-                
-                /*if (self.todayController.getSelectedEventList().count > 0) {
-                    ScrollView(.vertical) {
-                        //SchemaCardStack(eventList: self.$eventList)
-                        SchemaCardStack()//.environmentObject(todayController)
-                    }
-                }
-                else {
-                    if (eventList.count == 0) {
-                        Spacer()
-                        VStack {
-                            HStack {
-                                Spacer()
-                                if (self.todayController.getTimetableObjectLoadFromDate(date: self.todayController.selectedDate).fetchError == nil) {
-                                    Text("Ingenting för idag, se fliken Veckan för en översikt.")
-                                }
-                                else {
-                                    Text(self.todayController.fetchError!.message).foregroundColor(Color(UIColor.red))
-                                }
-                                Spacer()
-                            }.padding(30)
-                        }
-                    }
-                    Spacer()
-                }
-                */
                 if (self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate) != nil) {
                     if (self.todayController.getSelectedEventList().count > 0) {
                         ScrollView(.vertical) {
-                            //SchemaCardStack(eventList: self.$eventList)
-                            SchemaCardStack()//.environmentObject(todayController)
+                            SchemaCardStack()
                         }
                     }
                     else if (self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate)!.fetchError != nil) {
@@ -569,6 +434,101 @@ struct TodayView: View {
                 
             }
         }.background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all))
+    }
+}
+
+struct HorizontalDatePicker : View {
+    
+    @EnvironmentObject var todayController: TodayController
+    @State var dateNumberLimit: Int
+    @FetchRequest(entity: Profile.entity(), sortDescriptors: []) var profiles: FetchedResults<Profile>
+    
+    func getDayNameOfDate(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EE"
+        dateFormatter.locale =  Locale(identifier: "sv_SE")
+        let dayInWeek = dateFormatter.string(from: date)
+        return dayInWeek
+    }
+    
+    func getDayOfDate(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd"
+        let dayInWeek = dateFormatter.string(from: date)
+        return dayInWeek
+    }
+    
+    func addDaysToCurrentDate(num: Int) -> Date {
+        var dateComponent = DateComponents()
+        dateComponent.day = num
+        let futureDate = Calendar.current.date(byAdding: dateComponent, to: self.todayController.currentDate)
+        return futureDate!
+    }
+    
+    func isOnSameDay(date: Date, date2: Date) -> Bool {
+        return Calendar.current.isDate(date, inSameDayAs:date2)
+    }
+    
+    func getCircleBackgroundColor(index: Int) -> Color {
+        if (self.isOnSameDay(date: self.todayController.selectedDate, date2: self.addDaysToCurrentDate(num: index))) {
+            if (index != 0) {
+                return Color(UIColor.black)
+            }
+            else {
+                return Color(UIColor.systemRed)
+            }
+        }
+        /*else if (index == 0) {
+            return Color(UIColor.systemGray5)
+        }*/
+        else {
+            return Color(UIColor.white).opacity(0)
+        }
+    }
+    
+    func getDateForegroundColor(index: Int) -> Color {
+        if (self.isOnSameDay(date: self.todayController.selectedDate, date2: self.addDaysToCurrentDate(num: index))) {
+            return Color(UIColor.white)
+        }
+        else if (index == 0) {
+            return Color(UIColor.systemRed)
+        }
+        else {
+            return Color(UIColor.label)
+        }
+    }
+    
+    func isBold(index: Int) -> Bool {
+        return self.isOnSameDay(date: self.todayController.selectedDate, date2: self.addDaysToCurrentDate(num: index))
+    }
+    
+    var body: some View {
+        return ScrollView(.horizontal, showsIndicators: false) {
+            HStack {
+                ForEach(0..<dateNumberLimit) { index in
+                    Button(action: {
+                        self.todayController.selectedDate = self.addDaysToCurrentDate(num: index)
+                        self.todayController.load(profile: self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}))
+                    }) {
+                        VStack {
+                            Text(self.getDayNameOfDate(date: self.addDaysToCurrentDate(num: index)))
+                                .font(.caption)
+                                .frame(width: 40)
+                                .padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 0))
+                                .foregroundColor(Color(UIColor.secondaryLabel))
+                            Text(self.getDayOfDate(date: self.addDaysToCurrentDate(num: index)))
+                                .fontWeight(self.isBold(index: index) ? .bold : .regular)
+                                .frame(width: 40, height: 40)
+                                .background(self.getCircleBackgroundColor(index: index))
+                                .foregroundColor(self.getDateForegroundColor(index: index))
+                                .clipShape(Circle())
+                        }.padding(EdgeInsets(top: 0, leading: 6, bottom: 0, trailing: 6))
+                    }
+                }
+            }.padding(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8)).onAppear {
+                self.todayController.load(profile: self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}))
+            }
+        }
     }
 }
 
@@ -642,7 +602,6 @@ struct Recess: View {
         }.foregroundColor(self.todayDelegate.isActive(from: previous.end, to: next.start) ? Color(UIColor.systemBlue) : Color(UIColor.secondaryLabel)).padding(.bottom, 2)
     }
 }
-
 
 struct SchemaView_Previews: PreviewProvider {
     static var previews: some View {

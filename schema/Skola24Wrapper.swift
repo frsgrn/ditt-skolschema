@@ -823,8 +823,6 @@ class Skola24Wrapper{
         "X-Scope": "8a22163c-8662-4535-9050-bc5e1923df48"
     ]
     
-    // static let hostName: String = "lulea.skola24.se"
-    
     static func getSignature(userId: String, completion: @escaping (String?, FetchError?) -> ()) {
         AF.request("https://web.skola24.se/api/encrypt/signature", method: .post, parameters: JSON(["signature": userId]), encoder: JSONParameterEncoder.sortedKeys, headers: headers).responseJSON { response in
             do {
@@ -904,21 +902,21 @@ class Skola24Wrapper{
                 completion(nil, FetchError(message: "Kunde inte ladda nyckeln"))
             }
             AF.request("https://web.skola24.se/api/render/timetable", method: .post, parameters: JSON([
-                    "selection": selection,
-                    "unitGuid": school.unitGuid,
-                    "selectionType": selectionType,
-                    "blackAndWhite": false,
-                    "startDate": JSON.null,
-                    "endDate": JSON.null,
-                    "height": size.height,
-                    "width": size.width,
-                    "renderKey": key,
-                    "host": school.hostName,
-                    "periodText": "",
-                    "privateMode": JSON.null,
-                    "scheduleDay": 0,
-                    "showHeader": false,
-                    "week": week
+                "selection": selection,
+                "unitGuid": school.unitGuid,
+                "selectionType": selectionType,
+                "blackAndWhite": false,
+                "startDate": JSON.null,
+                "endDate": JSON.null,
+                "height": size.height,
+                "width": size.width,
+                "renderKey": key,
+                "host": school.hostName,
+                "periodText": "",
+                "privateMode": JSON.null,
+                "scheduleDay": 0,
+                "showHeader": false,
+                "week": week
             ]), encoder: JSONParameterEncoder.sortedKeys, headers: headers).responseJSON { response in
                 do {
                     if (response.data == nil) {
@@ -936,10 +934,7 @@ class Skola24Wrapper{
             }
             
         }
-        
-        
     }
-    
     
     static func getRenderKey(completion: @escaping (String?, FetchError?) -> ()) {
         AF.request("https://web.skola24.se/api/get/timetable/render/key", method: .post, parameters: JSON([
@@ -961,14 +956,14 @@ class Skola24Wrapper{
     
     static func getObjectTimetable(selection: String, selectionType: Int, school: School, timeframe: Timeframe, selectedDate: Date, completion: @escaping ([Event], FetchError?) -> ()) {
         getRenderKey() { (key, fetchError) in
-        if (fetchError != nil) {
-            completion([], fetchError)
-            return
-        }
-        else if(key == nil) {
-            completion([], FetchError(message: "Kunde inte ladda nyckeln"))
-        }
-        AF.request("https://web.skola24.se/api/render/timetable", method: .post, parameters: JSON([
+            if (fetchError != nil) {
+                completion([], fetchError)
+                return
+            }
+            else if(key == nil) {
+                completion([], FetchError(message: "Kunde inte ladda nyckeln"))
+            }
+            AF.request("https://web.skola24.se/api/render/timetable", method: .post, parameters: JSON([
                 "selection": selection,
                 "unitGuid": school.unitGuid,
                 "selectionType": selectionType,
@@ -976,7 +971,6 @@ class Skola24Wrapper{
                 "startDate": Timeframe.formatDateToString(date: timeframe.start),
                 "endDate": Timeframe.formatDateToString(date: timeframe.end),
                 "height": 700,
-                //"width": 732,
                 "width": 1200,
                 "renderKey": key,
                 "host": school.hostName,
@@ -985,99 +979,72 @@ class Skola24Wrapper{
                 "scheduleDay": timeframe.dayOfWeek,
                 "showHeader": false,
                 "week": JSON.null
-        ]), encoder: JSONParameterEncoder.sortedKeys, headers: headers).responseJSON { response in
-            do {
-                if (response.data == nil) {
-                    throw NSError()
-                }
-                let json:JSON = try JSON(data: response.data!)
-                let rawTimetableString = json["data"]["timetableJson"].rawString()
-                
-                let strData = rawTimetableString!.data(using: String.Encoding.utf8, allowLossyConversion: false)
-                let timetable: JSON = try JSON(data: strData!)["textList"]
-                let boxList: JSON = try JSON(data: strData!)["boxList"]
-                
-                // let filteredBoxList = boxList.arrayValue.filter {$0["height"] > 20 && $0["width"] > 100 && $0["y"] != 0 && $0["bcolor"] != "#CCCCCC" && $0["bcolor"] != "#FFFFFF"}
-
-                var filteredBoxList = boxList.arrayValue.filter {$0["height"] > 22 && $0["width"] > 100 && $0["y"] != 0 && $0["bcolor"] != "#CCCCCC"}
-                filteredBoxList.remove(at: 0)
-
-                
-                let filteredTimetable = timetable.arrayValue.filter {$0["text"] != ""}
-                
-                var sortedTimetable = filteredTimetable.sorted { u1, u2 in
-                    return (u1["y"], u1["x"]) < (u2["y"], u2["x"])
-                }
-                
-                /*var sortedTimetable = filteredTimetable.sorted { u1, u2 in
-                    //return (u1["y"], u1["x"]) < (u2["y"], u2["x"])
-                    return u1["y"] > u2["y"]
-                }*/
-                
-                sortedTimetable.removeFirst(1)
-                var eventList: [Event] = []
-                
-                let timeRegex = #"^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]"#
-                
-                for box in filteredBoxList {
-                    var working: Event = Event(start: Date(), end: Date(), title: "", information: "")
-                    var startDateY = -1
-                    var endDateY = -1
-                    
-                    working.x = box["x"].intValue
-                    working.y = box["y"].intValue
-                    working.width = box["width"].intValue
-                    working.height = box["height"].intValue
-                                       
-                    for drawText in sortedTimetable {
-                        if (box["x"].intValue <= drawText["x"].intValue && drawText["x"].intValue <= box["x"].intValue + box["width"].intValue && box["y"].intValue - 10 <= drawText["y"].intValue && drawText["y"].intValue <= box["y"].intValue + box["height"].intValue) {
-                            if (drawText["text"].rawString()?.range(of: timeRegex, options: .regularExpression) != nil) {
-                                if (drawText["x"].intValue == box["x"].intValue + 1 && startDateY == -1) {
-                                    startDateY = drawText["y"].intValue
-                                    working.start = TodayController.newDateFromHourMinuteString(hourMinuteString: drawText["text"].rawString()!, from: selectedDate)
-                                    working.hasStart = true
-                                    //working.end = TodayDelegate.newDateFromHourMinuteString(hourMinuteString: drawText["text"].rawString()!)
-                                    continue
-                                }
-                                else if (drawText["x"].intValue > box["x"].intValue + 5 /*&& endDateY == -1 && startDateY < drawText["y"].intValue*/) {
-                                    endDateY = drawText["y"].intValue
-                                    working.end = TodayController.newDateFromHourMinuteString(hourMinuteString: drawText["text"].rawString()!, from: selectedDate)
-                                    working.hasEnd = true
-                                    continue
-                                }
-                                continue
-                            }
-                            if (working.title == "") {
-                                working.title = drawText["text"].rawString()!
-                                continue
-                            }
-                            working.information = working.information + " " + drawText["text"].rawString()!
-                            working.information = working.information.trimmingCharacters(in: [" "])
-                        }
+            ]), encoder: JSONParameterEncoder.sortedKeys, headers: headers).responseJSON { response in
+                do {
+                    if (response.data == nil) {
+                        throw NSError()
                     }
-                    eventList.append(working)
-                }
-                
-                for index in 0..<eventList.count {
+                    let json:JSON = try JSON(data: response.data!)
+                    let rawTimetableString = json["data"]["timetableJson"].rawString()
                     
-                    /* if (!eventList[index].hasEnd && !eventList[index].hasStart) {
-                        print("Found event with no start and no end")
-                        for event2 in eventList {
-                            if (event2.hasEnd && eventList[index].y + eventList[index].height == event2.y + event2.height) {
-                                print("Found new end for event")
-                                eventList[index].end = event2.end
-                                break
+                    let strData = rawTimetableString!.data(using: String.Encoding.utf8, allowLossyConversion: false)
+                    let timetable: JSON = try JSON(data: strData!)["textList"]
+                    let boxList: JSON = try JSON(data: strData!)["boxList"]
+                    
+                    var filteredBoxList = boxList.arrayValue.filter {$0["height"] > 22 && $0["width"] > 100 && $0["y"] != 0 && $0["bcolor"] != "#CCCCCC"}
+                    filteredBoxList.remove(at: 0)
+                    
+                    
+                    let filteredTimetable = timetable.arrayValue.filter {$0["text"] != ""}
+                    
+                    var sortedTimetable = filteredTimetable.sorted { u1, u2 in
+                        return (u1["y"], u1["x"]) < (u2["y"], u2["x"])
+                    }
+                    
+                    sortedTimetable.removeFirst(1)
+                    var eventList: [Event] = []
+                    
+                    let timeRegex = #"^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]"#
+                    
+                    for box in filteredBoxList {
+                        var working: Event = Event(start: Date(), end: Date(), title: "", information: "")
+                        var startDateY = -1
+                        var endDateY = -1
+                        
+                        working.x = box["x"].intValue
+                        working.y = box["y"].intValue
+                        working.width = box["width"].intValue
+                        working.height = box["height"].intValue
+                        
+                        for drawText in sortedTimetable {
+                            if (box["x"].intValue <= drawText["x"].intValue && drawText["x"].intValue <= box["x"].intValue + box["width"].intValue && box["y"].intValue - 10 <= drawText["y"].intValue && drawText["y"].intValue <= box["y"].intValue + box["height"].intValue) {
+                                if (drawText["text"].rawString()?.range(of: timeRegex, options: .regularExpression) != nil) {
+                                    if (drawText["x"].intValue == box["x"].intValue + 1 && startDateY == -1) {
+                                        startDateY = drawText["y"].intValue
+                                        working.start = TodayController.newDateFromHourMinuteString(hourMinuteString: drawText["text"].rawString()!, from: selectedDate)
+                                        working.hasStart = true
+                                        continue
+                                    }
+                                    else if (drawText["x"].intValue > box["x"].intValue + 5) {
+                                        endDateY = drawText["y"].intValue
+                                        working.end = TodayController.newDateFromHourMinuteString(hourMinuteString: drawText["text"].rawString()!, from: selectedDate)
+                                        working.hasEnd = true
+                                        continue
+                                    }
+                                    continue
+                                }
+                                if (working.title == "") {
+                                    working.title = drawText["text"].rawString()!
+                                    continue
+                                }
+                                working.information = working.information + " " + drawText["text"].rawString()!
+                                working.information = working.information.trimmingCharacters(in: [" "])
                             }
                         }
-                        for event2 in eventList {
-                            if (event2.hasStart && eventList[index].y == event2.y) {
-                                print("Found new start for event")
-                                eventList[index].start = event2.start
-                                eventList[index].hasStart = true
-                                break
-                            }
-                        }
-                    } else {*/
+                        eventList.append(working)
+                    }
+                    
+                    for index in 0..<eventList.count {
                         if (!eventList[index].hasStart) {
                             for event2 in eventList {
                                 if (event2.hasStart && eventList[index].y == event2.y) {
@@ -1097,19 +1064,15 @@ class Skola24Wrapper{
                             }
                         }
                     }
-                    
-                // }
-                for index in 0..<eventList.count {
+                    eventList = eventList.filter {!$0.title.lowercased().contains("lunch")}
+                    eventList = eventList.sorted {
+                        $0.start < $1.start
+                    }
+                    completion(eventList, nil)
+                } catch {
+                    completion([], FetchError(message: "Kunde bygga idag-vy"))
                 }
-                eventList = eventList.filter {!$0.title.lowercased().contains("lunch")}
-                eventList = eventList.sorted {
-                    $0.start < $1.start
-                }
-                completion(eventList, nil)
-            } catch {
-                completion([], FetchError(message: "Kunde bygga idag-vy"))
             }
-        }
         }
     }
 }

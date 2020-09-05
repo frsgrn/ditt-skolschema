@@ -12,12 +12,6 @@ import SwiftUI
 extension Calendar {
     static let gregorian = Calendar(identifier: .gregorian)
 }
-/*
-extension Date {
-    var startOfWeek: Date? {
-        return Calendar.gregorian.date(from: Calendar.gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self))
-    }
-}*/
 
 extension Date {
     func dayNumberOfWeek() -> Int? {
@@ -31,7 +25,7 @@ extension Date {
         guard let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
         return gregorian.date(byAdding: .day, value: 1, to: sunday)
     }
-
+    
     var endOfWeek: Date? {
         let gregorian = Calendar(identifier: .gregorian)
         guard let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
@@ -92,19 +86,14 @@ class TodayController: ObservableObject {
     
     private func fetchAndSetObjectTimetable(selection: String, selectionType: Int, date: Date, profile: Profile) {
         if (TodayController.getDayNumberOfWeek(from: date) - 1 > 5 || TodayController.getDayNumberOfWeek(from: date) - 1 == 0) {
-                            self.addTimetableObjectLoad(eventList: [], week: WeekController.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: nil)
-
+            self.addTimetableObjectLoad(eventList: [], week: WeekController.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: nil)
             return
         }
         Skola24Wrapper.getObjectTimetable(selection: selection, selectionType: selectionType, school: School(unitGuid: profile.schoolGuid ?? "", unitId: "Skola", hostName: profile.domain ?? ""), timeframe: Timeframe(start: date.startOfWeek!, end: date.endOfWeek!, dayOfWeek: TodayController.getDayNumberOfWeek(from: date) - 1), selectedDate: date) { (eventList, fetchError) -> () in
             if (fetchError != nil) {
-                /*self.fetchError = fetchError
-                self.hasLoaded = true*/
                 self.addTimetableObjectLoad(eventList: [], week: WeekController.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: fetchError)
                 return
             }
-            /*self.hasLoaded = true
-            self.eventList = eventList*/
             self.addTimetableObjectLoad(eventList: eventList, week: WeekController.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: nil)
         }
     }
@@ -129,7 +118,6 @@ class TodayController: ObservableObject {
     
     func getSelectedEventList() -> [Event] {
         if (getTimetableObjectLoadFromDate(date: self.selectedDate) == nil) {
-            print("not found")
             return []
         }
         else {
@@ -159,7 +147,7 @@ class TodayController: ObservableObject {
     }
     
     static func minutesToHourMinuteString(minutes: Int) -> String {
-        let hours: Int = minutes / 60; //since both are ints, you get an int
+        let hours: Int = minutes / 60;
         let minutes: Int = minutes % 60;
         var hoursString = ""
         var minutesString = ""
@@ -180,15 +168,32 @@ class TodayController: ObservableObject {
         return hoursString + minutesString
     }
     
+    func selectedSchoolDayIsOver () -> Bool {
+        let timetableObjectLoad = self.getTimetableObjectLoadFromDate(date: self.selectedDate)
+        guard let guardedTimetableObjectLoad = timetableObjectLoad else {
+            return false
+        }
+        guard let lastEvent = guardedTimetableObjectLoad.eventList.last else {
+            return true
+        }
+        if (self.currentDate > lastEvent.end) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    
     func assistantMessage() -> String {
         let timetableObject = self.getTimetableObjectLoadFromDate(date: self.selectedDate)
         if (timetableObject == nil) {
             return "Laddar..."
         }
-        let guardedTimetableObject = timetableObject!
-        if (guardedTimetableObject.fetchError != nil) {
+        
+        guard let guardedTimetableObject = timetableObject else {
             return "Fel..."
         }
+        
         if (guardedTimetableObject.eventList.count == 0) {
             return "Inga aktiviteter idag"
         }
@@ -212,10 +217,7 @@ class TodayController: ObservableObject {
                 return "\(guardedTimetableObject.eventList[0].title) klockan \(Event.getHourMinuteString(date: guardedTimetableObject.eventList[0].start)) är första lektionen du har idag"
             }
         }
-        
-        //(self.todayDelegate.eventList[i].start ... self.todayDelegate.eventList[i].end).contains(Date())
-        
-        return "Skoldagen är över."
+        return "Skoldagen är över"
     }
     
     func getDayDate() -> String {
@@ -232,10 +234,6 @@ class TodayController: ObservableObject {
         let component = calendar.component(.weekOfYear, from: currentDate)
         return component
     }
-    
-    /* static func getDateOfWeekStart() -> Date {
-        return Date().startOfWeek!
-    } */
     
     static func getDayNumberOfWeek(from: Date) -> Int {
         return from.dayNumberOfWeek()!

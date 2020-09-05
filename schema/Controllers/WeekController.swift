@@ -19,8 +19,7 @@ class WeekController: ObservableObject {
     @Published var timetableJson: JSON = []
     @Published var timetableJsonWeekLoads: [TimetableJsonWeekLoad] = []
     @Published var fetchError: FetchError? = nil
-    // @Published var selectedWeek: Int = 22
-    @Published var targetSize: CGSize = CGSize(width: 400, height: 400)
+    @Published var targetSize: CGSize = CGSize(width: 600 * 1.5, height: 600 * 1.5 * 1.41428571429)
     
     func load(profile: Profile?, ofWeek: Int) {
         self.fetchError = nil
@@ -53,16 +52,13 @@ class WeekController: ObservableObject {
     private func fetchAndSetObjectTimetable(selection: String, selectionType: Int, ofWeek: Int, profile: Profile, size: CGSize) {
         Skola24Wrapper.getTimetable(selection: selection, selectionType: selectionType, size: size, school: School(unitGuid: profile.schoolGuid ?? "", unitId: "Kungsfågeln", hostName: profile.domain ?? ""), week: ofWeek) { (timetableJson, fetchError) -> () in
             if (fetchError != nil) {
-                // self.timetableJsonWeekLoads.append(TimetableJsonWeekLoad(timetableJson: nil, week: ofWeek, fetchError: fetchError))
                 self.fetchError = fetchError
                 return
             }
             if (timetableJson == nil) {
-                // self.timetableJsonWeekLoads.append(TimetableJsonWeekLoad(timetableJson: nil, week: ofWeek, fetchError: FetchError(message: "Kunde inte bygga vecko-vyn")))
                 self.fetchError = FetchError(message: "Kunde inte bygga vecko-vyn")
                 return
             }
-            // self.timetableJson = timetableJson!
             self.addTimetableJsonWeekLoad(timetableJsonWeekLoad: TimetableJsonWeekLoad(timetableJson: timetableJson!, week: ofWeek, fetchError: nil))
         }
     }
@@ -97,9 +93,6 @@ class WeekController: ObservableObject {
     }
     
     func getCurrentWeek() -> Int {
-        /*let calendar = NSCalendar.current
-        let component = calendar.component(.weekOfYear, from: Date())
-        return component*/
         return WeekController.getWeekFrom(date: Date())
     }
     
