@@ -101,13 +101,4 @@ class WeekController: ObservableObject {
         let component = calendar.component(.weekOfYear, from: date)
         return component
     }
-    
-    /*
-     Skola24Wrapper.getTimetable(selection: selection, selectionType: selectionType, school: School(unitGuid: profile.schoolGuid ?? "", unitId: "Kungsfågeln"), week: self.selectedWeek) { (eventList, fetchError) -> () in
-     if (fetchError != nil) {
-     self.fetchError = fetchError
-     return
-     }
-     self.eventList = eventList
-     }*/
 }

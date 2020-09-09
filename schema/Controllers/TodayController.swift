@@ -17,7 +17,7 @@ extension Date {
     func dayNumberOfWeek() -> Int? {
         return Calendar.current.dateComponents([.weekday], from: self).weekday
     }
-    func localString(dateStyle: DateFormatter.Style = .medium, timeStyle: DateFormatter.Style = .medium) -> String {
+    func localString(dateStyle: DateFormatter.Style = .medium, timeStyle: DateFormatter.Style = .short) -> String {
         return DateFormatter.localizedString(from: self, dateStyle: dateStyle, timeStyle: timeStyle)
     }
     var startOfWeek: Date? {
@@ -51,7 +51,6 @@ class TodayController: ObservableObject {
     @Published var timetableObjectLoads: [TimetableObjectLoad] = []
     
     func load(profile: Profile?) {
-        //let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
         self.fetchError = nil
         self.eventList = []
         self.hasLoaded = false
@@ -195,7 +194,7 @@ class TodayController: ObservableObject {
         }
         
         if (guardedTimetableObject.eventList.count == 0) {
-            return "Inga aktiviteter idag"
+            return "Ingenting på schemat idag"
         }
         
         for (_, event) in guardedTimetableObject.eventList.enumerated() {

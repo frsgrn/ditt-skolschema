@@ -9,159 +9,6 @@
 import SwiftUI
 import SwiftyJSON
 
-class PinchZoomView: UIView {
-    
-    weak var delegate: PinchZoomViewDelgate?
-    
-    private(set) var scale: CGFloat = 0 {
-        didSet {
-            delegate?.pinchZoomView(self, didChangeScale: scale)
-        }
-    }
-    
-    private(set) var anchor: UnitPoint = .center {
-        didSet {
-            delegate?.pinchZoomView(self, didChangeAnchor: anchor)
-        }
-    }
-    
-    private(set) var offset: CGSize = .zero {
-        didSet {
-            delegate?.pinchZoomView(self, didChangeOffset: offset)
-        }
-    }
-    
-    private(set) var isPinching: Bool = false {
-        didSet {
-            delegate?.pinchZoomView(self, didChangePinching: isPinching)
-        }
-    }
-    
-    private var startLocation: CGPoint = .zero
-    private var location: CGPoint = .zero
-    private var numberOfTouches: Int = 0
-    
-    init() {
-        super.init(frame: .zero)
-        
-        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinch(gesture:)))
-        pinchGesture.cancelsTouchesInView = false
-        addGestureRecognizer(pinchGesture)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError()
-    }
-    
-    @objc private func pinch(gesture: UIPinchGestureRecognizer) {
-        
-        switch gesture.state {
-        case .began:
-            isPinching = true
-            startLocation = gesture.location(in: self)
-            anchor = UnitPoint(x: startLocation.x / bounds.width, y: startLocation.y / bounds.height)
-            numberOfTouches = gesture.numberOfTouches
-            
-        case .changed:
-            if gesture.numberOfTouches != numberOfTouches {
-                // If the number of fingers being used changes, the start location needs to be adjusted to avoid jumping.
-                let newLocation = gesture.location(in: self)
-                let jumpDifference = CGSize(width: newLocation.x - location.x, height: newLocation.y - location.y)
-                startLocation = CGPoint(x: startLocation.x + jumpDifference.width, y: startLocation.y + jumpDifference.height)
-                
-                numberOfTouches = gesture.numberOfTouches
-            }
-            
-            scale = gesture.scale
-            
-            location = gesture.location(in: self)
-            offset = CGSize(width: location.x - startLocation.x, height: location.y - startLocation.y)
-            
-        case .ended, .cancelled, .failed:
-            isPinching = false
-            scale = 1.0
-            anchor = .center
-            offset = .zero
-        default:
-            break
-        }
-    }
-    
-}
-
-protocol PinchZoomViewDelgate: AnyObject {
-    func pinchZoomView(_ pinchZoomView: PinchZoomView, didChangePinching isPinching: Bool)
-    func pinchZoomView(_ pinchZoomView: PinchZoomView, didChangeScale scale: CGFloat)
-    func pinchZoomView(_ pinchZoomView: PinchZoomView, didChangeAnchor anchor: UnitPoint)
-    func pinchZoomView(_ pinchZoomView: PinchZoomView, didChangeOffset offset: CGSize)
-}
-
-struct PinchZoom: UIViewRepresentable {
-    
-    @Binding var scale: CGFloat
-    @Binding var anchor: UnitPoint
-    @Binding var offset: CGSize
-    @Binding var isPinching: Bool
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    func makeUIView(context: Context) -> PinchZoomView {
-        let pinchZoomView = PinchZoomView()
-        pinchZoomView.delegate = context.coordinator
-        return pinchZoomView
-    }
-    
-    func updateUIView(_ pageControl: PinchZoomView, context: Context) { }
-    
-    class Coordinator: NSObject, PinchZoomViewDelgate {
-        var pinchZoom: PinchZoom
-        
-        init(_ pinchZoom: PinchZoom) {
-            self.pinchZoom = pinchZoom
-        }
-        
-        func pinchZoomView(_ pinchZoomView: PinchZoomView, didChangePinching isPinching: Bool) {
-            pinchZoom.isPinching = isPinching
-        }
-        
-        func pinchZoomView(_ pinchZoomView: PinchZoomView, didChangeScale scale: CGFloat) {
-            pinchZoom.scale = scale
-        }
-        
-        func pinchZoomView(_ pinchZoomView: PinchZoomView, didChangeAnchor anchor: UnitPoint) {
-            pinchZoom.anchor = anchor
-        }
-        
-        func pinchZoomView(_ pinchZoomView: PinchZoomView, didChangeOffset offset: CGSize) {
-            pinchZoom.offset = offset
-        }
-    }
-}
-
-struct PinchToZoom: ViewModifier {
-    @State var scale: CGFloat = 1.0
-    @State var anchor: UnitPoint = .center
-    @State var offset: CGSize = .zero
-    @State var isPinching: Bool = false
-    
-    func body(content: Content) -> some View {
-        content
-            .scaleEffect(scale, anchor: anchor)
-            .offset(offset)
-            .animation(isPinching ? .none : .spring())
-            .overlay(PinchZoom(scale: $scale, anchor: $anchor, offset: $offset, isPinching: $isPinching))
-    }
-}
-
-extension View {
-    func pinchToZoom() -> some View {
-        self.modifier(PinchToZoom())
-    }
-}
-
-
 struct SchemaView: View {
     @State private var selection = 0
     @EnvironmentObject var todayController: TodayController
@@ -178,7 +25,7 @@ struct SchemaView: View {
             }.tabItem {
                 VStack {
                     Image(systemName: "rectangle.on.rectangle")
-                    Text("Idag")
+                    Text("Dagen")
                 }
             }
             .tag(0)
@@ -258,26 +105,11 @@ struct WeekView: View {
                 Int($0["type"].stringValue)! > Int($1["type"].stringValue)!
             }
             for text in sortedTimetable {
-                // if (text["type"].stringValue == "4") {
                 ctx.cgContext.setStrokeColor(hexStringToUIColor(hex: text["fcolor"].stringValue).cgColor)
-                // ctx.cgContext.setFillColor(UIColor.systemGroupedBackground.cgColor)
                 ctx.cgContext.setFillColor(hexStringToUIColor(hex: text["bcolor"].stringValue).cgColor)
                 ctx.cgContext.addRect(CGRect(x: text["x"].int!, y: text["y"].int!, width: text["width"].int!, height: text["height"].int!))
                 ctx.cgContext.drawPath(using: .fillStroke)
-                // }
             }
-            
-            
-            /*
-             
-             for text in timetableJson["boxList"].arrayValue {
-             if (text["type"].stringValue == "3") {
-             ctx.cgContext.setFillColor(UIColor.systemGroupedBackground.cgColor)
-             ctx.cgContext.addRect(CGRect(x: text["x"].int!, y: text["y"].int!, width: text["width"].int!, height: text["height"].int!))
-             }
-             }
-             ctx.cgContext.drawPath(using: .fill)
-             */
             
             for text in timetableJson["textList"].arrayValue {
                 let paragraphStyle = NSMutableParagraphStyle()
@@ -311,44 +143,45 @@ struct WeekView: View {
         return self.foldWeek(week: self.weekController.getCurrentWeek() + self.selection)
     }
     
+    @State var viewState = CGSize.zero
+    let prefSize: CGFloat = UIScreen.main.bounds.height - 500
+    @State var size: CGFloat = UIScreen.main.bounds.height - 500
+    
+    
     var body: some View {
-        
+        NavigationView {
         ZStack {
             VStack {
-                    Group {
-                        if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
-                            ScrollView {
-                                Group {
-                                    HStack {
-                                        Text("Vecka \(self.getSelectedWeek())").font(.title).bold()
-                                        Spacer()
-                                    }
-                                    Image(uiImage: self.drawTimetable(timetableJson: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.timetableJson))
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .pinchToZoom()
-                                    .if(self.colorScheme == .dark) { view in
-                                        view.colorInvert()
-                                    }
-                                }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
-                                
-                            }
-                        }
-                        else {
-                            Spacer()
-                            HStack(alignment: .center) {
-                                Spacer()
-                                Text("Laddar...")
-                                Spacer()
-                            }
-                        }
-                        
-                    }
-                
-                Spacer()
+                VStack {
                 HStack {
+                    Text("Vecka \(self.getSelectedWeek())").font(.title).bold()
+                    Spacer()
+                }
+                if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
+                    Image(uiImage: self.drawTimetable(timetableJson: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.timetableJson))
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .pinchToZoom()
+                        .if(self.colorScheme == .dark) { view in
+                            view.colorInvert()
+                    }
+                    Spacer()
+                }
+                else {
+                    VStack {
+                        Spacer()
+                        HStack(alignment: .center) {
+                            Spacer()
+                            Spinner(isAnimating: true, style: .medium, color: .gray)
+                            Spacer()
+                        }
+                        Spacer()
+                    }
+                }
+                }.padding(15)
+                /*HStack {
                     Button(action: {
-                            self.selection -= 1
+                        self.selection -= 1
                         
                     }) {
                         Image(systemName: "calendar.badge.minus")
@@ -380,20 +213,142 @@ struct WeekView: View {
                     
                     Spacer()
                     Button(action: {
-                            self.selection += 1
+                        self.selection += 1
                     }) {
                         Image(systemName: "calendar.badge.plus")
                     }.padding()
+                }*/
+                Spacer()
+                HorizontalWeekPicker(selection: self.$selection)
+            }
+            /*GeometryReader { geometry in
+                WeekPickerModal().cornerRadius(20).offset(y: self.size).gesture(DragGesture(minimumDistance: 30, coordinateSpace: .local).onChanged { value in
+                if value.translation.height > 200 {
+                    self.size = value.translation.height
                 }
-                
-                
-                
-            }.padding(15)
-        }.background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all)).onAppear {
+                else {
+                    let temp = self.prefSize
+                    self.size = temp + value.translation.height
+                }
+            }.onEnded { value in
+                let cutOff:CGFloat = 200
+                if value.translation.height > 0 {
+                    if value.translation.height > (cutOff + 200) {
+                        //self.size = self.prefSize
+                        self.size = self.prefSize
+                    }
+                    else {
+                        self.size = 400
+                    }
+                }
+                else {
+                    if value.translation.height < (cutOff - 200) {
+                        self.size = 400
+                        
+                    }
+                    else {
+                        //self.size = self.prefSize
+                        self.size = self.prefSize
+                    }
+                }
+                }
+            ).animation(.spring())
+             }*/
+            /*VStack {
+                Spacer()
+                HorizontalWeekPicker(selection: self.$selection)
+            }*/
+        }.background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all))/*.onAppear {
             if (self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}) != self.lastUsedProfile) {
                 self.weekController.timetableJsonWeekLoads = []
                 self.hasLoadedFirstTime = false
                 self.lastUsedProfile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
+            }
+        }*/.navigationBarTitle("Veckan", displayMode: .inline)
+        }
+        
+    }
+}
+
+struct HorizontalWeekPicker: View {
+    @Binding var selection: Int
+    @FetchRequest(entity: Profile.entity(), sortDescriptors: []) var profiles: FetchedResults<Profile>
+    @EnvironmentObject var weekController: WeekController
+    
+    func foldWeek(week: Int) -> Int {
+        if (week > 52) {
+            return week - 52
+        }
+        else {
+            return week
+        }
+    }
+    
+    func getSelectedWeek () -> Int {
+        return self.getWeekFromSelection(s: self.selection)
+    }
+    
+    func getWeekFromSelection (s: Int) -> Int {
+        return self.foldWeek(week: self.weekController.getCurrentWeek() + s)
+    }
+    
+    func getCircleBackgroundColor(index: Int) -> Color {
+        if (self.getSelectedWeek() == self.getWeekFromSelection(s: index)) {
+            if (index != 0) {
+                return Color(UIColor.label)
+            }
+            else {
+                return Color(UIColor.systemPink)
+            }
+        }
+        else {
+            return Color(UIColor.tertiarySystemGroupedBackground)
+        }
+    }
+    
+    func getForegroundColor(index: Int) -> Color {
+        if (self.getSelectedWeek() == self.getWeekFromSelection(s: index)) {
+            return Color(UIColor.systemBackground)
+        }
+        else if (index == 0) {
+            return Color(UIColor.systemPink)
+        }
+        else {
+            return Color(UIColor.label)
+        }
+    }
+    
+    func isBold(index: Int) -> Bool {
+        return self.getSelectedWeek() == self.getWeekFromSelection(s: index)
+    }
+    
+    var body: some View {
+        ScrollView (.horizontal, showsIndicators: false){
+            HStack {
+                ForEach(0...51, id: \.self) { index2 in
+                    Button(action: {
+                        print(index2)
+                        self.selection = index2
+                        let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
+                        self.weekController.load(profile: profile, ofWeek: self.getSelectedWeek())
+                    }) {
+                    HStack {
+                        Text("vecka").padding([.leading], 10).foregroundColor(Color(UIColor.label))
+                        Text("\(self.foldWeek(week: self.weekController.getCurrentWeek() + index2))")
+                            .if(self.isBold(index: index2)) { view in
+                                view.bold()
+                        }
+                        .frame(width: 35, height: 35)
+                            //.background(Color(UIColor.tertiarySystemGroupedBackground))
+                            .background(self.getCircleBackgroundColor(index: index2))
+                            .foregroundColor(self.getForegroundColor(index: index2))
+                        .clipShape(Circle())
+                        }.padding(5).background(Color(UIColor.secondarySystemGroupedBackground)).cornerRadius(30)
+                    }
+                }
+            }.padding(EdgeInsets(top: 0, leading: 15, bottom: 15, trailing: 15)).onAppear {
+                let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
+                self.weekController.load(profile: profile, ofWeek: self.getSelectedWeek())
             }
         }
     }
@@ -404,36 +359,79 @@ struct TodayView: View {
     @EnvironmentObject var todayController: TodayController
     
     var body: some View {
-        ZStack {
-            VStack(alignment: .leading) {
-                HorizontalDatePicker(dateNumberLimit: 14).padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
-                VStack(alignment: .leading) {
+        NavigationView {
+            VStack(spacing: 0) {
+                VStack {
+                    HorizontalDatePicker(dateNumberLimit: 14).padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+                    VStack {
                     Text("\(todayController.assistantMessage())")
-                        .font(.system(size: 20)).bold()
-                }.padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15))
-                if (self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate) != nil) {
-                    if (self.todayController.getSelectedEventList().count > 0) {
-                        ScrollView(.vertical) {
-                            SchemaCardStack()
+                        .font(.system(size: 20)).bold().multilineTextAlignment(.center)
+                    }.padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15))
+                }.padding(EdgeInsets(top: 0, leading: 0, bottom: 13, trailing: 0))//.background(Color("DatePickerBackground"))
+                VStack {
+                    if (self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate) != nil) {
+                        if (self.todayController.getSelectedEventList().count > 0) {
+                            ScrollView {
+                                SchemaCardStack().padding(EdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0))
+                            }
+                        }
+                        else if (self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate)!.fetchError != nil) {
+                            Text(self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate)!.fetchError!.message).foregroundColor(Color(UIColor.red)).padding()
+                            Spacer()
+                        }
+                        else {
+                            Spacer()
+                            HStack {
+                                Spacer()
+                                Text("☕️").font(.system(size: 40))
+                                Spacer()
+                            }
+                            Spacer()
                         }
                     }
-                    else if (self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate)!.fetchError != nil) {
-                        Text(self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate)!.fetchError!.message).foregroundColor(Color(UIColor.red)).padding()
-                        Spacer()
-                    }
                     else {
-                        Text("Ingenting för idag, se fliken \"Veckan\" för en översikt.").padding()
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            Spinner(isAnimating: true, style: .medium, color: .gray).padding()
+                            Spacer()
+                        }
                         Spacer()
                     }
                 }
-                else {
-                    Text("Vänta tills appen har läst in ditt schema...").padding()
+                
+            }.background(Color(UIColor.systemGroupedBackground)).navigationBarTitle("Dagen", displayMode: .inline)
+            //.background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all))
+        }
+    }
+}
+
+struct EventDetailView : View {
+    let event: Event
+    var body: some View {
+        List {
+            Section(header: Text("Tidsram"), footer: Text("Det finns alltid en risk att appen läser av ditt schema felaktigt eller att det har skett en schemaändring som inte visas i Skola24 systemet.")) {
+                HStack {
+                    Text("Börjar")
                     Spacer()
+                    Text(event.start.localString())
                 }
-                
-                
+                HStack {
+                    Text("Slutar")
+                    Spacer()
+                    Text(event.end.localString())
+                }
+                HStack {
+                    Text("Längd")
+                    Spacer()
+                    Text(TodayController.minutesToHourMinuteString(minutes: TodayController.getMinutesFromDates(from: event.start, to: event.end)))
+                }
             }
-        }.background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all))
+            Section(header: Text("Mer information om lektionen")) {
+                Text(event.information)
+            }
+            
+        }.listStyle(GroupedListStyle()).navigationBarTitle(Text(event.title), displayMode: .inline)
     }
 }
 
@@ -472,15 +470,12 @@ struct HorizontalDatePicker : View {
     func getCircleBackgroundColor(index: Int) -> Color {
         if (self.isOnSameDay(date: self.todayController.selectedDate, date2: self.addDaysToCurrentDate(num: index))) {
             if (index != 0) {
-                return Color(UIColor.black)
+                return Color(UIColor.label)
             }
             else {
-                return Color(UIColor.systemRed)
+                return Color(UIColor.systemPink)
             }
         }
-        /*else if (index == 0) {
-            return Color(UIColor.systemGray5)
-        }*/
         else {
             return Color(UIColor.white).opacity(0)
         }
@@ -488,10 +483,10 @@ struct HorizontalDatePicker : View {
     
     func getDateForegroundColor(index: Int) -> Color {
         if (self.isOnSameDay(date: self.todayController.selectedDate, date2: self.addDaysToCurrentDate(num: index))) {
-            return Color(UIColor.white)
+            return Color(UIColor.systemBackground)
         }
         else if (index == 0) {
-            return Color(UIColor.systemRed)
+            return Color(UIColor.systemPink)
         }
         else {
             return Color(UIColor.label)
@@ -533,13 +528,14 @@ struct HorizontalDatePicker : View {
 }
 
 struct SchemaCardStack: View {
-    //@Binding var eventList: [Event]
     @EnvironmentObject var todayController: TodayController
     var body: some View {
         VStack {
             ForEach(self.todayController.getSelectedEventList().indices, id: \.self) { index in
                 Group {
-                    SchemaCard(event: self.todayController.getSelectedEventList()[index])
+                    NavigationLink(destination: EventDetailView(event: self.todayController.getSelectedEventList()[index])) {
+                        SchemaCard(event: self.todayController.getSelectedEventList()[index])
+                    }
                     if (self.todayController.getSelectedEventList().indices.contains(index + 1)) {
                         if (self.shouldUseRecess(end: self.todayController.getSelectedEventList()[index].end, start: self.todayController.getSelectedEventList()[index + 1].start)) {
                             Recess(previous: self.todayController.getSelectedEventList()[index], next: self.todayController.getSelectedEventList()[index + 1])
@@ -550,7 +546,7 @@ struct SchemaCardStack: View {
                     }
                 }
             }
-        }.padding(EdgeInsets(top: 0, leading: 15, bottom: 25, trailing: 15))
+        }.padding(EdgeInsets(top: 0, leading: 15, bottom: 45, trailing: 15))
     }
     func shouldUseRecess(end: Date, start: Date) -> Bool {
         if (TodayController.getMinutesFromDates(from: end, to: start) > 0) {

@@ -16,11 +16,11 @@ struct ChooseDomain: View {
     
     func getSearchResults () -> [Domain] {
         if (self.searchField == "") {
-            return Skola24Wrapper.domainList
+            return DomainList.domainList
         }
         else {
             DispatchQueue.main.async {
-                self.searchResults = Skola24Wrapper.domainList.filter {$0.name.lowercased().contains(self.filterPrivateChars(from:self.searchField.lowercased()))}
+                self.searchResults = DomainList.domainList.filter {$0.name.lowercased().contains(self.filterPrivateChars(from:self.searchField.lowercased()))}
             }
             return self.searchResults
         }

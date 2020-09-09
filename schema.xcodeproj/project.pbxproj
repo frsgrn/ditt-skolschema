@@ -15,6 +15,8 @@
 		FF5718CC24BA923800B72D62 /* Skola24Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5718CB24BA923800B72D62 /* Skola24Wrapper.swift */; };
 		FF5B002B24ECF7B700E2805F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF5B002A24ECF7B700E2805F /* GoogleService-Info.plist */; };
 		FF5F81EB24FA6CBC0014A17A /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5F81EA24FA6CBC0014A17A /* ProfileController.swift */; };
+		FF5F81EF250555DA0014A17A /* ViewMisc.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5F81EE250555DA0014A17A /* ViewMisc.swift */; };
+		FF5F81F1250557290014A17A /* DomainList.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5F81F0250557290014A17A /* DomainList.swift */; };
 		FF7934CD24BA59A600AACE0A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF7934CC24BA59A600AACE0A /* AppDelegate.swift */; };
 		FF7934CF24BA59A600AACE0A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF7934CE24BA59A600AACE0A /* SceneDelegate.swift */; };
 		FF7934D224BA59A600AACE0A /* schema.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FF7934D024BA59A600AACE0A /* schema.xcdatamodeld */; };
@@ -63,6 +65,8 @@
 		FF5B002924E9D02A00E2805F /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		FF5B002A24ECF7B700E2805F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FF5F81EA24FA6CBC0014A17A /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
+		FF5F81EE250555DA0014A17A /* ViewMisc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewMisc.swift; sourceTree = "<group>"; };
+		FF5F81F0250557290014A17A /* DomainList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainList.swift; sourceTree = "<group>"; };
 		FF7934C924BA59A600AACE0A /* Skolschema.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skolschema.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF7934CC24BA59A600AACE0A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FF7934CE24BA59A600AACE0A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -135,6 +139,28 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		FF5F81EC250555010014A17A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FF7934D324BA59A600AACE0A /* ContentView.swift */,
+				FF448EB923EBF66A00408A45 /* NewProfileFlowView.swift */,
+				FF448EBB24BF4B7600408A45 /* SchemaView.swift */,
+				FFF13A2C24C597ED008F5CCD /* ProfileManagerView.swift */,
+				FF5F81EE250555DA0014A17A /* ViewMisc.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FF5F81ED2505551F0014A17A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FF5718CB24BA923800B72D62 /* Skola24Wrapper.swift */,
+				FFF13A3224C8CD26008F5CCD /* FetchError.swift */,
+				FF5F81F0250557290014A17A /* DomainList.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		FF7934C024BA59A600AACE0A = {
 			isa = PBXGroup;
 			children = (
@@ -160,21 +186,17 @@
 		FF7934CB24BA59A600AACE0A /* schema */ = {
 			isa = PBXGroup;
 			children = (
+				FF5F81ED2505551F0014A17A /* Models */,
+				FF5F81EC250555010014A17A /* Views */,
 				FF5B002A24ECF7B700E2805F /* GoogleService-Info.plist */,
 				FFF13A2B24C597B1008F5CCD /* Controllers */,
 				FF7934CC24BA59A600AACE0A /* AppDelegate.swift */,
 				FF7934CE24BA59A600AACE0A /* SceneDelegate.swift */,
-				FF7934D324BA59A600AACE0A /* ContentView.swift */,
 				FF7934D524BA59AC00AACE0A /* Assets.xcassets */,
 				FF7934DA24BA59AC00AACE0A /* LaunchScreen.storyboard */,
 				FF7934DD24BA59AC00AACE0A /* Info.plist */,
 				FF7934D024BA59A600AACE0A /* schema.xcdatamodeld */,
 				FF7934D724BA59AC00AACE0A /* Preview Content */,
-				FF5718CB24BA923800B72D62 /* Skola24Wrapper.swift */,
-				FF448EB923EBF66A00408A45 /* NewProfileFlowView.swift */,
-				FF448EBB24BF4B7600408A45 /* SchemaView.swift */,
-				FFF13A2C24C597ED008F5CCD /* ProfileManagerView.swift */,
-				FFF13A3224C8CD26008F5CCD /* FetchError.swift */,
 			);
 			path = schema;
 			sourceTree = "<group>";
@@ -464,10 +486,12 @@
 				FFF13A3124C59AAB008F5CCD /* WeekController.swift in Sources */,
 				FF7934D424BA59A600AACE0A /* ContentView.swift in Sources */,
 				FF5718CC24BA923800B72D62 /* Skola24Wrapper.swift in Sources */,
+				FF5F81EF250555DA0014A17A /* ViewMisc.swift in Sources */,
 				FF7934D224BA59A600AACE0A /* schema.xcdatamodeld in Sources */,
 				FF448EBC24BF4B7600408A45 /* SchemaView.swift in Sources */,
 				FFF13A3324C8CD26008F5CCD /* FetchError.swift in Sources */,
 				FF5F81EB24FA6CBC0014A17A /* ProfileController.swift in Sources */,
+				FF5F81F1250557290014A17A /* DomainList.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -637,7 +661,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"schema/Preview Content\"";
 				DEVELOPMENT_TEAM = 3B37CNMVH7;
 				ENABLE_PREVIEWS = YES;
@@ -647,7 +671,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.10.0;
+				MARKETING_VERSION = 2.11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema;
 				PRODUCT_NAME = Skolschema;
 				SWIFT_VERSION = 5.0;
@@ -661,7 +685,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"schema/Preview Content\"";
 				DEVELOPMENT_TEAM = 3B37CNMVH7;
 				ENABLE_PREVIEWS = YES;
@@ -671,7 +695,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.10.0;
+				MARKETING_VERSION = 2.11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema;
 				PRODUCT_NAME = Skolschema;
 				SWIFT_VERSION = 5.0;
