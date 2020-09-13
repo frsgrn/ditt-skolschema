@@ -7,12 +7,14 @@
 //
 
 import Foundation
+import SwiftUI
 import SwiftyJSON
 
 struct TimetableJsonWeekLoad {
     var timetableJson: JSON = []
     let week: Int
     let fetchError: FetchError?
+    let uiImage: UIImage
 }
 
 class WeekController: ObservableObject {
@@ -59,9 +61,69 @@ class WeekController: ObservableObject {
                 self.fetchError = FetchError(message: "Kunde inte bygga vecko-vyn")
                 return
             }
-            self.addTimetableJsonWeekLoad(timetableJsonWeekLoad: TimetableJsonWeekLoad(timetableJson: timetableJson!, week: ofWeek, fetchError: nil))
+            self.addTimetableJsonWeekLoad(timetableJsonWeekLoad: TimetableJsonWeekLoad(timetableJson: timetableJson!, week: ofWeek, fetchError: nil, uiImage: self.drawTimetable(timetableJson: timetableJson!)))
         }
     }
+    
+    
+    
+    func hexStringToUIColor (hex:String) -> UIColor {
+        var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        
+        if (cString.hasPrefix("#")) {
+            cString.remove(at: cString.startIndex)
+        }
+        
+        if ((cString.count) != 6) {
+            return UIColor.orange
+        }
+        
+        var rgbValue:UInt64 = 0
+        Scanner(string: cString).scanHexInt64(&rgbValue)
+        
+        return UIColor(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
+    }
+    
+    func drawTimetable(timetableJson: JSON) -> UIImage {
+        print("drawcall")
+        let size = self.targetSize
+        let renderer = UIGraphicsImageRenderer(size: size)
+        let img = renderer.image { ctx in
+            var sortedTimetable = timetableJson["boxList"].arrayValue
+            sortedTimetable.sort {
+                Int($0["type"].stringValue)! > Int($1["type"].stringValue)!
+            }
+            for text in sortedTimetable {
+                ctx.cgContext.setStrokeColor(hexStringToUIColor(hex: text["fcolor"].stringValue).cgColor)
+                ctx.cgContext.setFillColor(hexStringToUIColor(hex: text["bcolor"].stringValue).cgColor)
+                ctx.cgContext.addRect(CGRect(x: text["x"].int!, y: text["y"].int!, width: text["width"].int!, height: text["height"].int!))
+                ctx.cgContext.drawPath(using: .fillStroke)
+            }
+            
+            for text in timetableJson["textList"].arrayValue {
+                let paragraphStyle = NSMutableParagraphStyle()
+                paragraphStyle.alignment = .center
+                
+                let attrs: [NSAttributedString.Key: Any] = [
+                    .font: (text["bold"].boolValue ? UIFont.boldSystemFont(ofSize: CGFloat(text["fontsize"].floatValue)) : UIFont.systemFont(ofSize: CGFloat(text["fontsize"].floatValue))),
+                    .paragraphStyle: paragraphStyle,
+                    .foregroundColor: hexStringToUIColor(hex: text["fcolor"].stringValue)
+                ]
+                
+                let string = text["text"].stringValue
+                let attributedString = NSAttributedString(string: string, attributes: attrs)
+                attributedString.draw(with: CGRect(x: CGFloat(text["x"].int!), y: CGFloat(text["y"].int!), width: attributedString.size().width, height: attributedString.size().height), options: .usesLineFragmentOrigin, context: nil)
+            }
+        }
+        
+        return img
+    }
+    
     
     func getTimetableJsonWeekLoad(ofWeek: Int) -> TimetableJsonWeekLoad? {
         for timetable in self.timetableJsonWeekLoads {

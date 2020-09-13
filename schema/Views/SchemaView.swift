@@ -75,7 +75,7 @@ struct WeekView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @ObservedObject var settings = UserSettings()
-    
+    /*
     func hexStringToUIColor (hex:String) -> UIColor {
         var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
         
@@ -98,16 +98,8 @@ struct WeekView: View {
         )
     }
     
-    func foldWeek(week: Int) -> Int {
-        if (week > 52) {
-            return week - 52
-        }
-        else {
-            return week
-        }
-    }
-    
     func drawTimetable(timetableJson: JSON) -> UIImage {
+        print("drawcall")
         let size = self.weekController.targetSize
         let renderer = UIGraphicsImageRenderer(size: size)
         let img = renderer.image { ctx in
@@ -139,9 +131,18 @@ struct WeekView: View {
         }
         
         return img
-    }
+    }*/
     
     @State private var selection = 0
+    
+    func foldWeek(week: Int) -> Int {
+        if (week > 52) {
+            return week - 52
+        }
+        else {
+            return week
+        }
+    }
     
     func getSelectedWeek () -> Int {
         return self.foldWeek(week: self.weekController.getCurrentWeek() + self.selection)
@@ -169,8 +170,31 @@ struct WeekView: View {
         ZStack {
             VStack {
                 
+                        VStack {
+                        if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
+                            Image(uiImage: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.uiImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .pinchToZoom()
+                                .if(self.colorScheme == .dark && self.settings.invertSchemaColor) { view in
+                                    view.colorInvert()
+                                }
+                            .frame(width: UIScreen.main.bounds.width)
+                        }
+                        else {
+                            VStack {
+                                Spacer()
+                                HStack(alignment: .center) {
+                                    Spacer()
+                                    Spinner(isAnimating: true, style: .medium, color: .gray)
+                                    Spacer()
+                                }
+                                Spacer()
+                            }
+                        }
+                        }
                 
-                
+                /*
                 VStack {
                 if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
                     Image(uiImage: self.drawTimetable(timetableJson: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.timetableJson))
@@ -193,6 +217,8 @@ struct WeekView: View {
                     }
                 }
                 }.padding(15)
+ 
+ */
                 
                 
                 
