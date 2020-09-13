@@ -14,7 +14,6 @@ struct ProfileManagerView: View {
     @EnvironmentObject var todayController: TodayController
     @EnvironmentObject var weekController: WeekController
 
-    
     @State var showingDetail = false
     @State private var selectedProfileId = UserDefaults.standard.string(forKey: "selectedProfileId") ?? ""
     
@@ -43,8 +42,8 @@ struct ProfileManagerView: View {
     }
     
     var body: some View {
+        NavigationView {
         List {
-            Section {
                 ForEach(profiles, id: \.id) { profile in
                     Button(action: {
                         self.selectProfile(profile: profile)
@@ -63,7 +62,6 @@ struct ProfileManagerView: View {
                 }.onDelete(perform: deleteProfiles).onAppear {
                     self.selectFirstProfile()
                 }
-            }
         }.navigationBarTitle("Hantera scheman", displayMode: .automatic)
             .navigationBarItems(leading: EditButton(), trailing: Button(action: {
                 self.showingDetail.toggle()
@@ -75,9 +73,10 @@ struct ProfileManagerView: View {
             }.sheet(isPresented: $showingDetail) {
                 NavigationView {
                     ChooseDomain(showingDetail: self.$showingDetail).environment(\.managedObjectContext, self.moc)
-                }
+                }.navigationViewStyle(StackNavigationViewStyle())
             })
             .listStyle(GroupedListStyle())
+    }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

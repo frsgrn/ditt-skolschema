@@ -48,6 +48,8 @@ class TodayController: ObservableObject {
     @Published var selectedDate: Date = Date()
     @Published var currentDate: Date = Date()
     
+    @ObservedObject var settings = UserSettings()
+    
     @Published var timetableObjectLoads: [TimetableObjectLoad] = []
     
     func load(profile: Profile?) {
@@ -93,7 +95,11 @@ class TodayController: ObservableObject {
                 self.addTimetableObjectLoad(eventList: [], week: WeekController.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: fetchError)
                 return
             }
-            self.addTimetableObjectLoad(eventList: eventList, week: WeekController.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: nil)
+            var eventList_ = eventList
+            if (self.settings.removeLunch) {
+                eventList_ = eventList.filter {!$0.title.lowercased().contains("lunch")}
+            }
+            self.addTimetableObjectLoad(eventList: eventList_, week: WeekController.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: nil)
         }
     }
     

@@ -10,6 +10,10 @@
 		62AD7A0D2AE021A8E51AA953 /* Pods_schema.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EE18ECE4E562788876974E2 /* Pods_schema.framework */; };
 		A29B7E4CB2F18A0F249E1083 /* Pods_schemaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52609FF998F79EA3F24FBC07 /* Pods_schemaTests.framework */; };
 		F87A985E13702D53DF63CC0B /* Pods_schema_schemaUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9B5001DC5E3A6906F0163D /* Pods_schema_schemaUITests.framework */; };
+		FF2035EE250AA96A00A4D6FE /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2035ED250AA96A00A4D6FE /* UserDefault.swift */; };
+		FF2035F0250AAB9700A4D6FE /* UserDefaultKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2035EF250AAB9700A4D6FE /* UserDefaultKeys.swift */; };
+		FF2035F2250AADA400A4D6FE /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2035F1250AADA400A4D6FE /* UserSettings.swift */; };
+		FF2035F4250AB04500A4D6FE /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2035F3250AB04500A4D6FE /* SettingsView.swift */; };
 		FF448EBA23EBF66A00408A45 /* NewProfileFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF448EB923EBF66A00408A45 /* NewProfileFlowView.swift */; };
 		FF448EBC24BF4B7600408A45 /* SchemaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF448EBB24BF4B7600408A45 /* SchemaView.swift */; };
 		FF5718CC24BA923800B72D62 /* Skola24Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5718CB24BA923800B72D62 /* Skola24Wrapper.swift */; };
@@ -59,6 +63,10 @@
 		A1B60E7A12C1634479F6B83B /* Pods-schema-schemaUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-schema-schemaUITests.release.xcconfig"; path = "Target Support Files/Pods-schema-schemaUITests/Pods-schema-schemaUITests.release.xcconfig"; sourceTree = "<group>"; };
 		CADAD02DA74DAA47B0DE44EA /* Pods-schema.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-schema.debug.xcconfig"; path = "Target Support Files/Pods-schema/Pods-schema.debug.xcconfig"; sourceTree = "<group>"; };
 		EA9B5001DC5E3A6906F0163D /* Pods_schema_schemaUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_schema_schemaUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FF2035ED250AA96A00A4D6FE /* UserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefault.swift; sourceTree = "<group>"; };
+		FF2035EF250AAB9700A4D6FE /* UserDefaultKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultKeys.swift; sourceTree = "<group>"; };
+		FF2035F1250AADA400A4D6FE /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
+		FF2035F3250AB04500A4D6FE /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		FF448EB923EBF66A00408A45 /* NewProfileFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProfileFlowView.swift; sourceTree = "<group>"; };
 		FF448EBB24BF4B7600408A45 /* SchemaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaView.swift; sourceTree = "<group>"; };
 		FF5718CB24BA923800B72D62 /* Skola24Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skola24Wrapper.swift; sourceTree = "<group>"; };
@@ -147,6 +155,7 @@
 				FF448EBB24BF4B7600408A45 /* SchemaView.swift */,
 				FFF13A2C24C597ED008F5CCD /* ProfileManagerView.swift */,
 				FF5F81EE250555DA0014A17A /* ViewMisc.swift */,
+				FF2035F3250AB04500A4D6FE /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -157,6 +166,9 @@
 				FF5718CB24BA923800B72D62 /* Skola24Wrapper.swift */,
 				FFF13A3224C8CD26008F5CCD /* FetchError.swift */,
 				FF5F81F0250557290014A17A /* DomainList.swift */,
+				FF2035ED250AA96A00A4D6FE /* UserDefault.swift */,
+				FF2035EF250AAB9700A4D6FE /* UserDefaultKeys.swift */,
+				FF2035F1250AADA400A4D6FE /* UserSettings.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -478,9 +490,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF2035F0250AAB9700A4D6FE /* UserDefaultKeys.swift in Sources */,
 				FF448EBA23EBF66A00408A45 /* NewProfileFlowView.swift in Sources */,
 				FF7934CD24BA59A600AACE0A /* AppDelegate.swift in Sources */,
+				FF2035F4250AB04500A4D6FE /* SettingsView.swift in Sources */,
 				FFF13A2D24C597ED008F5CCD /* ProfileManagerView.swift in Sources */,
+				FF2035EE250AA96A00A4D6FE /* UserDefault.swift in Sources */,
 				FF7934CF24BA59A600AACE0A /* SceneDelegate.swift in Sources */,
 				FFA17EE924BBB4C300C383E5 /* TodayController.swift in Sources */,
 				FFF13A3124C59AAB008F5CCD /* WeekController.swift in Sources */,
@@ -492,6 +507,7 @@
 				FFF13A3324C8CD26008F5CCD /* FetchError.swift in Sources */,
 				FF5F81EB24FA6CBC0014A17A /* ProfileController.swift in Sources */,
 				FF5F81F1250557290014A17A /* DomainList.swift in Sources */,
+				FF2035F2250AADA400A4D6FE /* UserSettings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -671,7 +687,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.11.0;
+				MARKETING_VERSION = 2.11.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema;
 				PRODUCT_NAME = Skolschema;
 				SWIFT_VERSION = 5.0;
@@ -695,7 +711,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.11.0;
+				MARKETING_VERSION = 2.11.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema;
 				PRODUCT_NAME = Skolschema;
 				SWIFT_VERSION = 5.0;

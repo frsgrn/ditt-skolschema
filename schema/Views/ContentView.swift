@@ -27,7 +27,7 @@ struct ContentView: View {
             else {
                 NavigationView {
                     ChooseDomain(showingDetail: self.$showingDetailState)
-                }.sheet(isPresented: self.$showingWelcomeSheetState) {
+                }.navigationViewStyle(StackNavigationViewStyle()).sheet(isPresented: self.$showingWelcomeSheetState) {
                     Text("Ditt Skolschema").font(.largeTitle).bold().padding(.top, 30)
                     HStack {
                     VStack (alignment: .leading) {

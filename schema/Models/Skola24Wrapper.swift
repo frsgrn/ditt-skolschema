@@ -324,7 +324,7 @@ class Skola24Wrapper{
                             }
                         }
                     }
-                    eventList = eventList.filter {!$0.title.lowercased().contains("lunch")}
+                    /*eventList = eventList.filter {!$0.title.lowercased().contains("lunch")}*/
                     eventList = eventList.sorted {
                         $0.start < $1.start
                     }
