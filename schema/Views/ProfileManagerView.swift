@@ -51,7 +51,7 @@ struct ProfileManagerView: View {
                         HStack {
                             VStack (alignment: .leading){
                                 Text(profile.title ?? "okänd").bold()
-                                Text(profile.subTitle ?? "okänd")
+                                Text(profile.subTitle ?? "okänd").foregroundColor(Color(UIColor.secondaryLabel))
                             }
                             Spacer()
                             if (self.profiles.first(where: {$0.id!.uuidString == self.selectedProfileId}) == profile) {
@@ -75,7 +75,8 @@ struct ProfileManagerView: View {
                     ChooseDomain(showingDetail: self.$showingDetail).environment(\.managedObjectContext, self.moc)
                 }.navigationViewStyle(StackNavigationViewStyle())
             })
-            .listStyle(GroupedListStyle())
+            // MARK: REMOVE BEFORE 14.0
+            .listStyle(GroupedListStyle()).environment(\.horizontalSizeClass, .regular)
     }.navigationViewStyle(StackNavigationViewStyle())
     }
 }

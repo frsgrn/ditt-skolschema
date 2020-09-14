@@ -17,6 +17,13 @@ extension Date {
     func dayNumberOfWeek() -> Int? {
         return Calendar.current.dateComponents([.weekday], from: self).weekday
     }
+    func dayDate() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE dd/MM"
+        formatter.locale =  Locale(identifier: "sv_SE")
+        let dateString = formatter.string(from: self)
+        return dateString
+    }
     func localString(dateStyle: DateFormatter.Style = .medium, timeStyle: DateFormatter.Style = .short) -> String {
         return DateFormatter.localizedString(from: self, dateStyle: dateStyle, timeStyle: timeStyle)
     }
@@ -225,13 +232,13 @@ class TodayController: ObservableObject {
         return "Skoldagen är över"
     }
     
-    func getDayDate() -> String {
+    /*func getDayDate() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE dd/MM"
         formatter.locale =  Locale(identifier: "sv_SE")
         let dateString = formatter.string(from: currentDate)
         return dateString
-    }
+    }*/
     
     
     func getCurrentWeek() -> Int {

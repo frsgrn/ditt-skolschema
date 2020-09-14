@@ -37,13 +37,11 @@ struct ChooseDomain: View {
         List {
                 ForEach(getSearchResults(), id: \.id) { domain in
                     Group {
-                        //if (self.isMatching(domain: domain)) {
                         NavigationLink(destination: ChooseSchool(showingDetail: self.$showingDetail, domain: domain)) {
                             VStack (alignment: .leading) {
                                 Text(domain.name)
                             }
                         }
-                    //}
                     }
                 }
             
@@ -88,12 +86,12 @@ struct ChooseSelection: View {
     let domain: Domain
     let school: School
     
-    @State var classes: [s24_Class] = []
-    @State var teachers: [Teacher] = []
+    @State var classes: [s24_Class]?
+    @State var teachers: [Teacher]?
     
     @State var idInput = ""
     
-    let options = ["Klass", "Lärare", "Eget"]
+    let options = ["Klass", "Lärare"]
     
     func fetch() {
         Skola24Wrapper.getClasses(school: self.school) { (classes, fetchError) in
@@ -146,97 +144,73 @@ struct ChooseSelection: View {
     }
     
     var body: some View {
-        Group {
-            Picker("Välj", selection: $selection) {
-                ForEach(0..<options.count) { i in
-                    Text("\(self.options[i])").tag(i)
-                }
-            }.pickerStyle(SegmentedPickerStyle())
-            
-            if (selection == 0) {
-                List {
-                ForEach(self.classes, id: \.id) { s24_class in
-                    Button(action: {
-                        self.addClassProfile(s24_class: s24_class)
-                    }) {
-                        VStack (alignment: .leading) {
-                            Text(s24_class.name)
-                        }
+        List {
+            Section(header: Text("Välj ett personligt schema...")) {
+                HStack {
+                    TextField("Personnummer/id...", text: self.$idInput)
+                    Spacer()
+                    Button("Lägg till") {
+                        self.addIdProfile(id: self.idInput)
                     }
                 }
-                }
             }
-            else if (selection == 1) {
-                List {
-                ForEach(self.teachers, id: \.id) { teacher in
-                    Button(action: {
-                        self.addTeacherProfile(teacher: teacher)
-                    }) {
-                        VStack (alignment: .leading) {
-                            HStack {
-                                Text(teacher.lastName + " ").font(.headline) + Text(teacher.firstName)
+            
+            Section(header: Text("...eller från klass/lärare")) {
+                Picker("Välj", selection: $selection) {
+                    ForEach(0..<options.count) { i in
+                        Text("\(self.options[i])").tag(i)
+                    }
+                }.pickerStyle(SegmentedPickerStyle())
+                if (selection == 0) {
+                    if (self.classes == nil) {
+                        HStack {
+                            Spacer()
+                            Spinner(isAnimating: true, style: .medium, color: .gray)
+                            Spacer()
+                        }
+                    }
+                    else if (self.classes!.count == 0) {
+                        Text("Det finns inga klasser")
+                    }
+                    else {
+                    ForEach(self.classes!, id: \.id) { s24_class in
+                        Button(action: {
+                            self.addClassProfile(s24_class: s24_class)
+                        }) {
+                            VStack (alignment: .leading) {
+                                Text(s24_class.name)
                             }
-                            Text(teacher.id)
+                        }.foregroundColor(Color(UIColor.label))
+                    }
+                    }
+                }
+                else if (selection == 1) {
+                    if (self.teachers == nil) {
+                        HStack {
+                            Spacer()
+                            Spinner(isAnimating: true, style: .medium, color: .gray)
+                            Spacer()
                         }
                     }
-                }
-                }
-            }
-            else if (selection == 2) {
-                List {
-                    Section(header: Text("Välj ditt personliga schema")) {
-                TextField("Personnummer/id...", text: self.$idInput)
-                Button("Lägg till") {
-                    self.addIdProfile(id: self.idInput)
-                }
+                    else if (self.teachers!.count == 0) {
+                        Text("Det finns inga lärare")
                     }
-                }.listStyle(GroupedListStyle())
+                    else {
+                    ForEach(self.teachers!, id: \.id) { teacher in
+                        Button(action: {
+                            self.addTeacherProfile(teacher: teacher)
+                        }) {
+                            VStack (alignment: .leading) {
+                                HStack {
+                                    Text(teacher.lastName + " ").font(.headline) + Text(teacher.firstName)
+                                }
+                                Text(teacher.id).foregroundColor(Color(UIColor.secondaryLabel))
+                            }.foregroundColor(Color(UIColor.label))
+                        }
+                    }
+                    }
+                }
             }
-        }.onAppear(perform: fetch).navigationBarTitle("Välj schema från")
-    }
-}
-
-struct SearchBar: UIViewRepresentable {
-
-    @Binding var text: String
-    var placeholder: String
-
-    class Coordinator: NSObject, UISearchBarDelegate {
-
-        @Binding var text: String
-
-        init(text: Binding<String>) {
-            _text = text
-        }
-
-        func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-            text = searchText
-            searchBar.showsCancelButton = true
-        }
-        
-        func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-            text = ""
-            searchBar.showsCancelButton = false
-            searchBar.endEditing(true)
-            
-        }
-    }
-
-    func makeCoordinator() -> SearchBar.Coordinator {
-        return Coordinator(text: $text)
-    }
-
-    func makeUIView(context: UIViewRepresentableContext<SearchBar>) -> UISearchBar {
-        let searchBar = UISearchBar(frame: .zero)
-        searchBar.delegate = context.coordinator
-        searchBar.placeholder = placeholder
-        searchBar.searchBarStyle = .minimal
-        searchBar.autocapitalizationType = .none
-        searchBar.showsCancelButton = false
-        return searchBar
-    }
-
-    func updateUIView(_ uiView: UISearchBar, context: UIViewRepresentableContext<SearchBar>) {
-        uiView.text = text
+        }.navigationBarTitle("Välj schema").listStyle(GroupedListStyle()).environment(\.horizontalSizeClass, .regular).onAppear(perform: fetch)
     }
 }

@@ -67,6 +67,7 @@ extension View {
     }
 }
 
+// MARK: Week view
 struct WeekView: View {
     @EnvironmentObject var weekController: WeekController
     @EnvironmentObject var todayController: TodayController
@@ -75,63 +76,6 @@ struct WeekView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @ObservedObject var settings = UserSettings()
-    /*
-    func hexStringToUIColor (hex:String) -> UIColor {
-        var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        
-        if (cString.hasPrefix("#")) {
-            cString.remove(at: cString.startIndex)
-        }
-        
-        if ((cString.count) != 6) {
-            return UIColor.orange
-        }
-        
-        var rgbValue:UInt64 = 0
-        Scanner(string: cString).scanHexInt64(&rgbValue)
-        
-        return UIColor(
-            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
-            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
-            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
-            alpha: CGFloat(1.0)
-        )
-    }
-    
-    func drawTimetable(timetableJson: JSON) -> UIImage {
-        print("drawcall")
-        let size = self.weekController.targetSize
-        let renderer = UIGraphicsImageRenderer(size: size)
-        let img = renderer.image { ctx in
-            var sortedTimetable = timetableJson["boxList"].arrayValue
-            sortedTimetable.sort {
-                Int($0["type"].stringValue)! > Int($1["type"].stringValue)!
-            }
-            for text in sortedTimetable {
-                ctx.cgContext.setStrokeColor(hexStringToUIColor(hex: text["fcolor"].stringValue).cgColor)
-                ctx.cgContext.setFillColor(hexStringToUIColor(hex: text["bcolor"].stringValue).cgColor)
-                ctx.cgContext.addRect(CGRect(x: text["x"].int!, y: text["y"].int!, width: text["width"].int!, height: text["height"].int!))
-                ctx.cgContext.drawPath(using: .fillStroke)
-            }
-            
-            for text in timetableJson["textList"].arrayValue {
-                let paragraphStyle = NSMutableParagraphStyle()
-                paragraphStyle.alignment = .center
-                
-                let attrs: [NSAttributedString.Key: Any] = [
-                    .font: (text["bold"].boolValue ? UIFont.boldSystemFont(ofSize: CGFloat(text["fontsize"].floatValue)) : UIFont.systemFont(ofSize: CGFloat(text["fontsize"].floatValue))),
-                    .paragraphStyle: paragraphStyle,
-                    .foregroundColor: hexStringToUIColor(hex: text["fcolor"].stringValue)
-                ]
-                
-                let string = text["text"].stringValue
-                let attributedString = NSAttributedString(string: string, attributes: attrs)
-                attributedString.draw(with: CGRect(x: CGFloat(text["x"].int!), y: CGFloat(text["y"].int!), width: attributedString.size().width, height: attributedString.size().height), options: .usesLineFragmentOrigin, context: nil)
-            }
-        }
-        
-        return img
-    }*/
     
     @State private var selection = 0
     
@@ -150,26 +94,10 @@ struct WeekView: View {
     
     var colors: [Color] = [.blue, .green, .red, .orange]
     
-    
-    
-    /*
-     HStack(alignment: .center, spacing: 30) {
-         ForEach(0..<colors.count) { i in
-             self.colors[i]
-                  .frame(width: 250, height: 400, alignment: .center)
-                  .cornerRadius(10)
-         }
-     }.modifier(ScrollingHStackModifier(items: colors.count, itemWidth: 250, itemSpacing: 30, onEnded: { index in
-         print(index)
-     }))
-     */
-    
-    
     var body: some View {
         NavigationView {
         ZStack {
             VStack {
-                
                         VStack {
                         if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
                             Image(uiImage: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.uiImage)
@@ -193,35 +121,6 @@ struct WeekView: View {
                             }
                         }
                         }
-                
-                /*
-                VStack {
-                if (self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek()) != nil) {
-                    Image(uiImage: self.drawTimetable(timetableJson: self.weekController.getTimetableJsonWeekLoad(ofWeek: self.getSelectedWeek())!.timetableJson))
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .pinchToZoom()
-                        .if(self.colorScheme == .dark && self.settings.invertSchemaColor) { view in
-                            view.colorInvert()
-                        }
-                }
-                else {
-                    VStack {
-                        Spacer()
-                        HStack(alignment: .center) {
-                            Spacer()
-                            Spinner(isAnimating: true, style: .medium, color: .gray)
-                            Spacer()
-                        }
-                        Spacer()
-                    }
-                }
-                }.padding(15)
- 
- */
-                
-                
-                
                 Spacer()
                 HorizontalWeekPicker(selection: self.$selection)
             }
@@ -231,15 +130,7 @@ struct WeekView: View {
     }
 }
 
-/*struct WeekViewDayInsight: View {
-    let date: Date
-    var body: some View {
-        ScrollView {
-            SchemaCardStack(date: date)
-        }.navigationBarTitle("dagvy")
-    }
-}*/
-
+// MARK: Horizontal week picker
 struct HorizontalWeekPicker: View {
     @Binding var selection: Int
     @FetchRequest(entity: Profile.entity(), sortDescriptors: []) var profiles: FetchedResults<Profile>
@@ -324,6 +215,7 @@ struct HorizontalWeekPicker: View {
     }
 }
 
+// MARK: Today view
 struct TodayView: View {
     //@Binding var eventList: [Event]
     @EnvironmentObject var todayController: TodayController
@@ -342,7 +234,7 @@ struct TodayView: View {
                     if (self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate) != nil) {
                         if (self.todayController.getSelectedEventList().count > 0) {
                             ScrollView {
-                                SchemaCardStack(date: self.todayController.selectedDate).padding(EdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0))
+                                SchemaCardStack().padding(EdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0))
                             }
                         }
                         else if (self.todayController.getTimetableObjectLoadFromDate(date: todayController.selectedDate)!.fetchError != nil) {
@@ -370,12 +262,13 @@ struct TodayView: View {
                     }
                 }
                 
-            }.background(Color(UIColor.systemGroupedBackground)).navigationBarTitle("Dagen", displayMode: .inline)
+            }.background(Color(UIColor.systemGroupedBackground)).navigationBarTitle(Text(self.todayController.selectedDate.dayDate().capitalizingFirstLetter()), displayMode: .inline)
             //.background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all))
         }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
+// MARK: Event detail view
 struct EventDetailView : View {
     let event: Event
     var body: some View {
@@ -400,11 +293,13 @@ struct EventDetailView : View {
             Section(header: Text("Mer information om lektionen")) {
                 Text(event.information)
             }
-            
-        }.listStyle(GroupedListStyle()).navigationBarTitle(Text(event.title), displayMode: .inline)
+            // MARK: REMOVE BEFORE 14.0
+        }.listStyle(GroupedListStyle()).environment(\.horizontalSizeClass, .regular)
+            .navigationBarTitle(Text(event.title), displayMode: .inline)
     }
 }
 
+//MARK: Horizontal date picker
 struct HorizontalDatePicker : View {
     
     @EnvironmentObject var todayController: TodayController
@@ -497,47 +392,18 @@ struct HorizontalDatePicker : View {
     }
 }
 
+//MARK: Schema card stack
 struct SchemaCardStack: View {
     @EnvironmentObject var todayController: TodayController
     @FetchRequest(entity: Profile.entity(), sortDescriptors: []) var profiles: FetchedResults<Profile>
-
-    @State var date: Date
     
+    // FIXME: Gå efter något annat än bara selectedDate?
     func getEventList() -> [Event] {
-        
-        guard let eventList = todayController.getTimetableObjectLoadFromDate(date: self.date) else {
+        guard let eventList = todayController.getTimetableObjectLoadFromDate(date: self.todayController.selectedDate) else {
             return []
         }
         return eventList.eventList
-        
-        /*if (todayController.getTimetableObjectLoadFromDate(date: self.date) == nil) {
-            return []
-        }
-        else {
-            return todayController.getTimetableObjectLoadFromDate(date: self.date)!.eventList
-        }*/
     }
-    
-    /*var body: some View {
-        VStack {
-            ForEach(self.todayController.getSelectedEventList().indices, id: \.self) { index in
-                Group {
-                    NavigationLink(destination: EventDetailView(event: self.todayController.getSelectedEventList()[index])) {
-                        SchemaCard(event: self.todayController.getSelectedEventList()[index])
-                    }
-                    if (self.todayController.getSelectedEventList().indices.contains(index + 1)) {
-                        if (self.shouldUseRecess(end: self.todayController.getSelectedEventList()[index].end, start: self.todayController.getSelectedEventList()[index + 1].start)) {
-                            Recess(previous: self.todayController.getSelectedEventList()[index], next: self.todayController.getSelectedEventList()[index + 1])
-                        }
-                        else {
-                            Spacer()
-                        }
-                    }
-                }
-            }
-        }.padding(EdgeInsets(top: 0, leading: 15, bottom: 45, trailing: 15))
-    }*/
-    
     var body: some View {
         VStack {
             ForEach(getEventList().indices, id: \.self) { index in
@@ -566,7 +432,7 @@ struct SchemaCardStack: View {
     }
 }
 
-
+//MARK: Schema card
 struct SchemaCard: View {
     let event: Event
     @EnvironmentObject var todayDelegate: TodayController
@@ -595,6 +461,7 @@ struct SchemaCard: View {
     }
 }
 
+//MARK: Recess
 struct Recess: View {
     let previous: Event
     let next: Event
