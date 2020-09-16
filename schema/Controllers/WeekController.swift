@@ -22,8 +22,10 @@ class WeekController: ObservableObject {
     @Published var timetableJsonWeekLoads: [TimetableJsonWeekLoad] = []
     @Published var fetchError: FetchError? = nil
     @Published var targetSize: CGSize = CGSize(width: 600 * 1.5, height: 600 * 1.5 * 1.41428571429)
+    @Published var selectedWeek: Int = 0
     
-    func load(profile: Profile?, ofWeek: Int) {
+    func load(profile: Profile?/*, ofWeek: Int*/) {
+        let ofWeek = self.selectedWeek
         self.fetchError = nil
         if (profile == nil) {
             self.fetchError = FetchError(message: "Ingen profil vald")

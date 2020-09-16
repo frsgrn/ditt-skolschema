@@ -20,8 +20,7 @@ struct SettingsView: View {
                 Toggle(isOn: $settings.invertSchemaColor) {
                     Text("Invertera färg på schemabilden i mörkt läge")
                 }
-                // MARK: REMOVE ON 14.0
-            }.listStyle(GroupedListStyle()).environment(\.horizontalSizeClass, .regular)
+            }.listStyle(InsetGroupedListStyle())
                 .navigationBarTitle("Inställningar")
         }.navigationViewStyle(StackNavigationViewStyle())
     }

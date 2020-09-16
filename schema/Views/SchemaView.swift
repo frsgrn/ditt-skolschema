@@ -89,7 +89,8 @@ struct WeekView: View {
     }
     
     func getSelectedWeek () -> Int {
-        return self.foldWeek(week: self.weekController.getCurrentWeek() + self.selection)
+        //return self.foldWeek(week: self.weekController.getCurrentWeek() + self.selection)
+        return self.weekController.selectedWeek
     }
     
     var colors: [Color] = [.blue, .green, .red, .orange]
@@ -114,7 +115,8 @@ struct WeekView: View {
                                 Spacer()
                                 HStack(alignment: .center) {
                                     Spacer()
-                                    Spinner(isAnimating: true, style: .medium, color: .gray)
+                                    ProgressView()
+                                    // Spinner(isAnimating: true, style: .medium, color: .gray)
                                     Spacer()
                                 }
                                 Spacer()
@@ -186,31 +188,30 @@ struct HorizontalWeekPicker: View {
     var body: some View {
         ScrollView (.horizontal, showsIndicators: false){
             HStack {
-                ForEach(0...51, id: \.self) { index2 in
+                ForEach(0...51, id: \.self) { index in
                     Button(action: {
-                        print(index2)
-                        self.selection = index2
+                        self.selection = index
                         let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
-                        self.weekController.load(profile: profile, ofWeek: self.getSelectedWeek())
+                        self.weekController.selectedWeek = self.getSelectedWeek()
+                        self.weekController.load(profile: profile)
                     }) {
                     HStack {
                         Text("vecka").padding([.leading], 10).foregroundColor(Color(UIColor.label))
-                        Text("\(self.foldWeek(week: self.weekController.getCurrentWeek() + index2))")
-                            .if(self.isBold(index: index2)) { view in
+                        Text("\(self.foldWeek(week: self.weekController.getCurrentWeek() + index))")
+                            .if(self.isBold(index: index)) { view in
                                 view.bold()
                         }
                         .frame(width: 35, height: 35)
-                            //.background(Color(UIColor.tertiarySystemGroupedBackground))
-                            .background(self.getCircleBackgroundColor(index: index2))
-                            .foregroundColor(self.getForegroundColor(index: index2))
+                            .background(self.getCircleBackgroundColor(index: index))
+                            .foregroundColor(self.getForegroundColor(index: index))
                         .clipShape(Circle())
                         }.padding(5).background(Color(UIColor.secondarySystemGroupedBackground)).cornerRadius(30)
                     }
                 }
-            }.padding(EdgeInsets(top: 0, leading: 15, bottom: 15, trailing: 15)).onAppear {
+            }.padding(EdgeInsets(top: 0, leading: 15, bottom: 15, trailing: 15))/*.onAppear {
                 let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
                 self.weekController.load(profile: profile, ofWeek: self.getSelectedWeek())
-            }
+            }*/
         }
     }
 }
@@ -255,7 +256,8 @@ struct TodayView: View {
                         Spacer()
                         HStack {
                             Spacer()
-                            Spinner(isAnimating: true, style: .medium, color: .gray).padding()
+                            //Spinner(isAnimating: true, style: .medium, color: .gray).padding()
+                            ProgressView()
                             Spacer()
                         }
                         Spacer()
@@ -293,8 +295,7 @@ struct EventDetailView : View {
             Section(header: Text("Mer information om lektionen")) {
                 Text(event.information)
             }
-            // MARK: REMOVE BEFORE 14.0
-        }.listStyle(GroupedListStyle()).environment(\.horizontalSizeClass, .regular)
+        }.listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text(event.title), displayMode: .inline)
     }
 }
@@ -385,9 +386,7 @@ struct HorizontalDatePicker : View {
                         }.padding(EdgeInsets(top: 0, leading: 6, bottom: 0, trailing: 6))
                     }
                 }
-            }.padding(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8)).onAppear {
-                self.todayController.load(profile: self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")}))
-            }
+            }.padding(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8))
         }
     }
 }

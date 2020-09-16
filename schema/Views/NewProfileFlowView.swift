@@ -165,7 +165,7 @@ struct ChooseSelection: View {
                     if (self.classes == nil) {
                         HStack {
                             Spacer()
-                            Spinner(isAnimating: true, style: .medium, color: .gray)
+                            ProgressView()
                             Spacer()
                         }
                     }
@@ -188,7 +188,7 @@ struct ChooseSelection: View {
                     if (self.teachers == nil) {
                         HStack {
                             Spacer()
-                            Spinner(isAnimating: true, style: .medium, color: .gray)
+                            ProgressView()
                             Spacer()
                         }
                     }
@@ -211,6 +211,6 @@ struct ChooseSelection: View {
                     }
                 }
             }
-        }.navigationBarTitle("Välj schema").listStyle(GroupedListStyle()).environment(\.horizontalSizeClass, .regular).onAppear(perform: fetch)
+        }.navigationBarTitle("Välj schema").listStyle(InsetGroupedListStyle()).onAppear(perform: fetch)
     }
 }

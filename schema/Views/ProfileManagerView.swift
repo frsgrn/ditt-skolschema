@@ -20,10 +20,14 @@ struct ProfileManagerView: View {
     func deleteProfiles(at offsets: IndexSet) {
         for offset in offsets {
             let profile =  profiles[offset]
+            if (profile == self.profiles.first(where: {$0.id!.uuidString == self.selectedProfileId})) {
+                if (profiles.count != 1) {
+                    selectFirstProfile()
+                }
+            }
             moc.delete(profile)
         }
         try? moc.save()
-        selectFirstProfile()
     }
     
     func selectFirstProfile() {
@@ -36,9 +40,12 @@ struct ProfileManagerView: View {
         let id:UUID = profile.id!
         self.selectedProfileId = id.uuidString
         ProfileController.setProfile(profile: profile)
-        self.todayController.load(profile: profile)
+        
         self.weekController.timetableJsonWeekLoads = []
         self.todayController.timetableObjectLoads = []
+        
+        self.todayController.load(profile: profile)
+        self.weekController.load(profile: profile)
     }
     
     var body: some View {
@@ -73,10 +80,9 @@ struct ProfileManagerView: View {
             }.sheet(isPresented: $showingDetail) {
                 NavigationView {
                     ChooseDomain(showingDetail: self.$showingDetail).environment(\.managedObjectContext, self.moc)
-                }.navigationViewStyle(StackNavigationViewStyle())
+                }.navigationViewStyle(StackNavigationViewStyle()).font(.body)
             })
-            // MARK: REMOVE BEFORE 14.0
-            .listStyle(GroupedListStyle()).environment(\.horizontalSizeClass, .regular)
+            .listStyle(InsetGroupedListStyle())
     }.navigationViewStyle(StackNavigationViewStyle())
     }
 }

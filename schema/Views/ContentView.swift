@@ -10,7 +10,8 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selection = 0
-    @EnvironmentObject var todayDelegate: TodayController
+    @EnvironmentObject var todayController: TodayController
+    @EnvironmentObject var weekController: WeekController
     
     @FetchRequest(entity: Profile.entity(), sortDescriptors: []) var profiles: FetchedResults<Profile>
     @Environment(\.managedObjectContext) var moc
@@ -22,7 +23,12 @@ struct ContentView: View {
     var body: some View {
         return Group {
             if (profiles.count > 0) {
-                SchemaView()
+                SchemaView().onAppear {
+                    let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
+                    todayController.load(profile: profile)
+                    weekController.selectedWeek = weekController.getCurrentWeek()
+                    weekController.load(profile: profile)
+                }
             }
             else {
                 NavigationView {

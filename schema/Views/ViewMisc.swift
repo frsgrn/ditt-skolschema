@@ -18,7 +18,7 @@ extension String {
     }
 }
 
-struct Spinner: UIViewRepresentable {
+/*struct Spinner: UIViewRepresentable {
     let isAnimating: Bool
     let style: UIActivityIndicatorView.Style
     let color: UIColor
@@ -33,7 +33,7 @@ struct Spinner: UIViewRepresentable {
     func updateUIView(_ uiView: UIActivityIndicatorView, context: UIViewRepresentableContext<Spinner>) {
         isAnimating ? uiView.startAnimating() : uiView.stopAnimating()
     }
-}
+}*/
 
 class PinchZoomView: UIView {
     
