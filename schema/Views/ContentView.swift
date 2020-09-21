@@ -22,17 +22,29 @@ struct ContentView: View {
     
     var body: some View {
         return Group {
-            if (profiles.count > 0) {
+            if (ProfileManager.getProfiles().count > 0) {
                 SchemaView().onAppear {
-                    let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
-                    todayController.load(profile: profile)
+                    //let profile = self.profiles.first(where: {$0.id!.uuidString == UserDefaults.standard.string(forKey: "selectedProfileId")})
+                    todayController.load(ProfileManager.getSelectedProfile())
                     weekController.selectedWeek = weekController.getCurrentWeek()
-                    weekController.load(profile: profile)
+                    weekController.load(ProfileManager.getSelectedProfile())
                 }
             }
             else {
                 NavigationView {
-                    ChooseDomain(showingDetail: self.$showingDetailState)
+                    ChooseDomain(showingDetail: self.$showingDetailState).onAppear {
+                        if (self.profiles.count > 0 && ProfileManager.getProfiles().count == 0) {
+                            for profileOld in profiles {
+                                //profileOld.id.uuidString
+                                //let profile_ = Profile_(classGUID: profileOld.classGuid, schoolGUID: profileOld.schoolGuid ?? "", teacherGUID: profileOld.teacherGuid, domain: profileOld.domain ?? "", id: profileOld.id!.uuidString, signature: profileOld.signature, title: profileOld.title ?? "", subTitle: profileOld.subTitle ?? "")
+                                let prof = p_Profile(domain: profileOld.domain!, schoolGUID: profileOld.schoolGuid!, title: profileOld.title!, subTitle: profileOld.subTitle!)
+                                prof.teacherGUID = profileOld.teacherGuid
+                                prof.classGUID = profileOld.classGuid
+                                prof.signature = profileOld.signature
+                                ProfileManager.addProfile(profile: prof)
+                            }
+                        }
+                    }
                 }.navigationViewStyle(StackNavigationViewStyle()).sheet(isPresented: self.$showingWelcomeSheetState) {
                     Text("Ditt Skolschema").font(.largeTitle).bold().padding(.top, 30)
                     HStack {

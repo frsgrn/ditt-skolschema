@@ -78,7 +78,6 @@ struct ChooseSchool: View {
 
 struct ChooseSelection: View {
     @Binding var showingDetail: Bool
-    @FetchRequest(entity: Profile.entity(), sortDescriptors: []) var profiles: FetchedResults<Profile>
     @Environment(\.managedObjectContext) var moc
     
     @State private var selection = 0
@@ -93,6 +92,9 @@ struct ChooseSelection: View {
     
     let options = ["Klass", "Lärare"]
     
+    @EnvironmentObject var todayController: TodayController
+    @EnvironmentObject var weekController: WeekController
+    
     func fetch() {
         Skola24Wrapper.getClasses(school: self.school) { (classes, fetchError) in
             self.classes = classes ?? []
@@ -103,44 +105,92 @@ struct ChooseSelection: View {
     }
     
     func addClassProfile(s24_class: s24_Class) {
-        let profile = Profile(context: self.moc)
+        /*let profile = Profile(context: self.moc)
         profile.id = UUID()
         profile.domain = self.domain.url
         profile.schoolGuid = self.school.unitGuid
         profile.classGuid = s24_class.groupGuid
         profile.title = s24_class.name
         profile.subTitle = school.unitId
-        try? self.moc.save()
+        */
+        //MARK: Experimental
+
+        //let profile_ = Profile_(classGUID: s24_class.groupGuid, schoolGUID: self.school.unitGuid, teacherGUID: nil, domain: self.domain.url, id: UUID().uuidString, signature: nil, title: s24_class.name, subTitle: school.unitId)
+        //ProfileManager.addProfile(profile: profile_)
+        let profile = p_Profile(domain: self.domain.url, schoolGUID: self.school.unitGuid, title: s24_class.name, subTitle: school.unitId)
+        profile.classGUID = s24_class.groupGuid
+        ProfileManager.addProfile(profile: profile)
+        ProfileManager.selectProfile(profile)
+        
+        clearAndLoad()
+        
+        //try? self.moc.save()
         self.showingDetail = false
+        //ProfileController.setProfile(profile: profile)
+        
     }
     
     func addTeacherProfile(teacher: Teacher) {
-        let profile = Profile(context: self.moc)
+        /*let profile = Profile(context: self.moc)
         profile.id = UUID()
         profile.domain = self.domain.url
         profile.schoolGuid = self.school.unitGuid
         profile.teacherGuid = teacher.personGuid
         profile.title = teacher.firstName + " " + teacher.lastName
         profile.subTitle = school.unitId
-        try? self.moc.save()
+        */
+        //MARK: Experimental
+
+        //let profile_ = Profile_(classGUID: nil, schoolGUID: self.school.unitGuid, teacherGUID: teacher.personGuid, domain: self.domain.url, id: UUID().uuidString, signature: nil, title: teacher.firstName + " " + teacher.lastName, subTitle: school.unitId)
+        //ProfileManager.addProfile(profile: profile_)
+        let profile = p_Profile(domain: self.domain.url, schoolGUID: self.school.unitGuid, title: teacher.firstName + " " + teacher.lastName, subTitle: school.unitId)
+        profile.teacherGUID = teacher.personGuid
+        ProfileManager.addProfile(profile: profile)
+        ProfileManager.selectProfile(profile)
+        
+        clearAndLoad()
+        
+        //try? self.moc.save()
         self.showingDetail = false
-        UserDefaults.standard.set(profile.id?.uuidString, forKey: "selectedProfileId")
+        //ProfileController.setProfile(profile: profile)
     }
     
     func addIdProfile(id: String) {
         if (id.count == 0) {
             return
         }        
-        let profile = Profile(context: self.moc)
+        /*let profile = Profile(context: self.moc)
         profile.id = UUID()
         profile.domain = self.domain.url
         profile.schoolGuid = self.school.unitGuid
         profile.signature = id
         profile.title = id
         profile.subTitle = school.unitId
-        try? self.moc.save()
+        */
+        //MARK: Experimental
+        
+
+        //let profile_ = Profile_(classGUID: nil, schoolGUID: self.school.unitGuid, teacherGUID: nil, domain: self.domain.url, id: UUID().uuidString, signature: id, title: id, subTitle: school.unitId)
+        //ProfileManager.addProfile(profile: profile_)
+        let profile = p_Profile(domain: self.domain.url, schoolGUID: self.school.unitGuid, title: id, subTitle: school.unitId)
+        profile.signature = id
+        ProfileManager.addProfile(profile: profile)
+        ProfileManager.selectProfile(profile)
+        
+        clearAndLoad()
+        
+        // try? self.moc.save()
         self.showingDetail = false
-        UserDefaults.standard.set(profile.id?.uuidString, forKey: "selectedProfileId")
+        // ProfileController.setProfile(profile: profile)
+        // UserDefaults.standard.set(profile.id?.uuidString, forKey: "selectedProfileId")
+    }
+    
+    func clearAndLoad() {
+            self.weekController.timetableJsonWeekLoads = []
+            self.todayController.timetableObjectLoads = []
+        
+        self.weekController.load(ProfileManager.getSelectedProfile())
+        self.todayController.load(ProfileManager.getSelectedProfile())
     }
     
     var body: some View {

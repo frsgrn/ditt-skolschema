@@ -63,11 +63,17 @@ PODS:
   - nanopb/decode (1.30905.0)
   - nanopb/encode (1.30905.0)
   - PromisesObjC (1.2.10)
+  - Realm (5.4.2):
+    - Realm/Headers (= 5.4.2)
+  - Realm/Headers (5.4.2)
+  - RealmSwift (5.4.2):
+    - Realm (= 5.4.2)
   - SwiftyJSON (4.3.0)
 
 DEPENDENCIES:
   - Alamofire (~> 5.2)
   - Firebase/Analytics
+  - RealmSwift
   - SwiftyJSON (~> 4.0)
 
 SPEC REPOS:
@@ -83,6 +89,8 @@ SPEC REPOS:
     - GoogleUtilities
     - nanopb
     - PromisesObjC
+    - Realm
+    - RealmSwift
     - SwiftyJSON
 
 SPEC CHECKSUMS:
@@ -97,8 +105,10 @@ SPEC CHECKSUMS:
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
   PromisesObjC: b14b1c6b68e306650688599de8a45e49fae81151
+  Realm: ced868eb0254f8d33a21c06981355e5aa33bc005
+  RealmSwift: aedc4363150f3c61f91ae0537ed116d2d080a4dd
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
 
-PODFILE CHECKSUM: faba2a77f178a67d63eed404074094afca17405f
+PODFILE CHECKSUM: be6f8d51e6de925161852436fe08b0cdf6de429c
 
 COCOAPODS: 1.9.3

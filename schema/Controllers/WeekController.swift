@@ -24,15 +24,18 @@ class WeekController: ObservableObject {
     @Published var targetSize: CGSize = CGSize(width: 600 * 1.5, height: 600 * 1.5 * 1.41428571429)
     @Published var selectedWeek: Int = 0
     
-    func load(profile: Profile?/*, ofWeek: Int*/) {
+    func load(_ p_profile: p_Profile?/*, ofWeek: Int*/) {
         let ofWeek = self.selectedWeek
         self.fetchError = nil
-        if (profile == nil) {
+        
+        if (p_profile == nil) {
             self.fetchError = FetchError(message: "Ingen profil vald")
             return
         }
-        if (profile!.signature != nil) {
-            Skola24Wrapper.getSignature(userId: profile!.signature ?? "") { (signature, fetchError) -> () in
+        let profile = p_profile!
+        
+        if (profile.signature != nil) {
+            Skola24Wrapper.getSignature(userId: profile.signature!) { (signature, fetchError) -> () in
                 if (fetchError != nil) {
                     self.fetchError = fetchError
                     return
@@ -41,20 +44,20 @@ class WeekController: ObservableObject {
                     self.fetchError = FetchError(message: "Kunde inte hämta signatur")
                     return
                 }
-                self.fetchAndSetObjectTimetable(selection: signature ?? "", selectionType: 4, ofWeek: ofWeek, profile: profile!, size: self.targetSize)
+                self.fetchAndSetObjectTimetable(selection: signature ?? "", selectionType: 4, ofWeek: ofWeek, profile: profile, size: self.targetSize)
             }
             return
         }
-        if (profile!.classGuid != nil) {
-            fetchAndSetObjectTimetable(selection: profile!.classGuid!, selectionType: 0, ofWeek: ofWeek, profile: profile!, size: self.targetSize)
+        if (profile.classGUID != nil) {
+            fetchAndSetObjectTimetable(selection: profile.classGUID!, selectionType: 0, ofWeek: ofWeek, profile: profile, size: self.targetSize)
         }
-        else if (profile!.teacherGuid != nil) {
-            fetchAndSetObjectTimetable(selection: profile!.teacherGuid!, selectionType: 7, ofWeek: ofWeek, profile: profile!, size: self.targetSize)
+        else if (profile.teacherGUID != nil) {
+            fetchAndSetObjectTimetable(selection: profile.teacherGUID!, selectionType: 7, ofWeek: ofWeek, profile: profile, size: self.targetSize)
         }
     }
     
-    private func fetchAndSetObjectTimetable(selection: String, selectionType: Int, ofWeek: Int, profile: Profile, size: CGSize) {
-        Skola24Wrapper.getTimetable(selection: selection, selectionType: selectionType, size: size, school: School(unitGuid: profile.schoolGuid ?? "", unitId: "Kungsfågeln", hostName: profile.domain ?? ""), week: ofWeek) { (timetableJson, fetchError) -> () in
+    private func fetchAndSetObjectTimetable(selection: String, selectionType: Int, ofWeek: Int, profile: p_Profile, size: CGSize) {
+        Skola24Wrapper.getTimetable(selection: selection, selectionType: selectionType, size: size, school: School(unitGuid: profile.schoolGUID, unitId: "Kungsfågeln", hostName: profile.domain), week: ofWeek) { (timetableJson, fetchError) -> () in
             if (fetchError != nil) {
                 self.fetchError = fetchError
                 return
@@ -66,31 +69,6 @@ class WeekController: ObservableObject {
             self.addTimetableJsonWeekLoad(timetableJsonWeekLoad: TimetableJsonWeekLoad(timetableJson: timetableJson!, week: ofWeek, fetchError: nil, uiImage: self.drawTimetable(timetableJson: timetableJson!)))
         }
     }
-    
-    
-    
-    func hexStringToUIColor (hex:String) -> UIColor {
-        var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        
-        if (cString.hasPrefix("#")) {
-            cString.remove(at: cString.startIndex)
-        }
-        
-        if ((cString.count) != 6) {
-            return UIColor.orange
-        }
-        
-        var rgbValue:UInt64 = 0
-        Scanner(string: cString).scanHexInt64(&rgbValue)
-        
-        return UIColor(
-            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
-            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
-            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
-            alpha: CGFloat(1.0)
-        )
-    }
-    
     func drawTimetable(timetableJson: JSON) -> UIImage {
         print("drawcall")
         let size = self.targetSize
@@ -101,8 +79,8 @@ class WeekController: ObservableObject {
                 Int($0["type"].stringValue)! > Int($1["type"].stringValue)!
             }
             for text in sortedTimetable {
-                ctx.cgContext.setStrokeColor(hexStringToUIColor(hex: text["fcolor"].stringValue).cgColor)
-                ctx.cgContext.setFillColor(hexStringToUIColor(hex: text["bcolor"].stringValue).cgColor)
+                ctx.cgContext.setStrokeColor(ColorExtensions.hexStringToUIColor(hex: text["fcolor"].stringValue).cgColor)
+                ctx.cgContext.setFillColor(ColorExtensions.hexStringToUIColor(hex: text["bcolor"].stringValue).cgColor)
                 ctx.cgContext.addRect(CGRect(x: text["x"].int!, y: text["y"].int!, width: text["width"].int!, height: text["height"].int!))
                 ctx.cgContext.drawPath(using: .fillStroke)
             }
@@ -114,7 +92,7 @@ class WeekController: ObservableObject {
                 let attrs: [NSAttributedString.Key: Any] = [
                     .font: (text["bold"].boolValue ? UIFont.boldSystemFont(ofSize: CGFloat(text["fontsize"].floatValue)) : UIFont.systemFont(ofSize: CGFloat(text["fontsize"].floatValue))),
                     .paragraphStyle: paragraphStyle,
-                    .foregroundColor: hexStringToUIColor(hex: text["fcolor"].stringValue)
+                    .foregroundColor: ColorExtensions.hexStringToUIColor(hex: text["fcolor"].stringValue)
                 ]
                 
                 let string = text["text"].stringValue
@@ -157,12 +135,6 @@ class WeekController: ObservableObject {
     }
     
     func getCurrentWeek() -> Int {
-        return WeekController.getWeekFrom(date: Date())
-    }
-    
-    static func getWeekFrom(date: Date) -> Int {
-        let calendar = NSCalendar.current
-        let component = calendar.component(.weekOfYear, from: date)
-        return component
+        return DateExtensions.getWeekFrom(date: Date())
     }
 }

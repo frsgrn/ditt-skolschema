@@ -27,5 +27,11 @@ final class UserSettings: ObservableObject {
         }
     }
     
+    @UserDefault("ShowColorCircleInTodayView", defaultValue: true)
+    var showColorCircleInTodayView: Bool {
+        willSet {
+            objectWillChange.send()
+        }
+    }
     
 }

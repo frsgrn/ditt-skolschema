@@ -14,11 +14,18 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             List {
-                Toggle(isOn: $settings.removeLunch) {
-                    Text("Ta bort \"Lunch\" från schemat")
+                Section(header: Text("Dagen")) {
+                    Toggle(isOn: $settings.showColorCircleInTodayView) {
+                        Text("Visa lektionens färg bredvid kursnamnet")
+                    }
+                    Toggle(isOn: $settings.removeLunch) {
+                        Text("Ta bort \"Lunch\" från schemat")
+                    }
                 }
-                Toggle(isOn: $settings.invertSchemaColor) {
-                    Text("Invertera färg på schemabilden i mörkt läge")
+                Section(header: Text("Veckan")) {
+                    Toggle(isOn: $settings.invertSchemaColor) {
+                        Text("Invertera färg på schemabilden i mörkt läge")
+                    }
                 }
             }.listStyle(InsetGroupedListStyle())
                 .navigationBarTitle("Inställningar")

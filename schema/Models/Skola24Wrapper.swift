@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 import Alamofire
 import SwiftyJSON
 
@@ -55,6 +56,8 @@ struct Event : Identifiable {
     var y: Int = -1
     var width: Int = -1
     var height: Int = -1
+    
+    var color: UIColor = UIColor.blue
     
     static func getHourMinuteString(date: Date) -> String{
         let formatter = DateFormatter()
@@ -276,18 +279,20 @@ class Skola24Wrapper{
                         working.width = box["width"].intValue
                         working.height = box["height"].intValue
                         
+                        working.color = ColorExtensions.hexStringToUIColor(hex: box["bcolor"].stringValue)
+                        
                         for drawText in sortedTimetable {
                             if (box["x"].intValue <= drawText["x"].intValue && drawText["x"].intValue <= box["x"].intValue + box["width"].intValue && box["y"].intValue - 10 <= drawText["y"].intValue && drawText["y"].intValue <= box["y"].intValue + box["height"].intValue) {
                                 if (drawText["text"].rawString()?.range(of: timeRegex, options: .regularExpression) != nil) {
                                     if (drawText["x"].intValue == box["x"].intValue + 1 && startDateY == -1) {
                                         startDateY = drawText["y"].intValue
-                                        working.start = TodayController.newDateFromHourMinuteString(hourMinuteString: drawText["text"].rawString()!, from: selectedDate)
+                                        working.start = DateExtensions.newDateFromHourMinuteString(hourMinuteString: drawText["text"].rawString()!, from: selectedDate)
                                         working.hasStart = true
                                         continue
                                     }
                                     else if (drawText["x"].intValue > box["x"].intValue + 5) {
                                         endDateY = drawText["y"].intValue
-                                        working.end = TodayController.newDateFromHourMinuteString(hourMinuteString: drawText["text"].rawString()!, from: selectedDate)
+                                        working.end = DateExtensions.newDateFromHourMinuteString(hourMinuteString: drawText["text"].rawString()!, from: selectedDate)
                                         working.hasEnd = true
                                         continue
                                     }
