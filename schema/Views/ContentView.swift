@@ -42,6 +42,9 @@ struct ContentView: View {
                                 prof.classGUID = profileOld.classGuid
                                 prof.signature = profileOld.signature
                                 ProfileManager.addProfile(profile: prof)
+                                //profileOld.delete
+                                moc.delete(profileOld)
+                                try? moc.save()
                             }
                         }
                     }

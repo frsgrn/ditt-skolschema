@@ -7,8 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4388645EF428562D91404CB5 /* Pods_widgetExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08D57F7D1876EE1E5BB2A5A3 /* Pods_widgetExtension.framework */; };
 		FA53B41AD618ABB457233F61 /* Pods_schema.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9292AC049C34B6B3A7994727 /* Pods_schema.framework */; };
 		FF001F0C251A6C8B0006FA84 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF001F0B251A6C8B0006FA84 /* Profile.swift */; };
+		FF0020E0251A98210006FA84 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF9C80DB2515419300E2F702 /* WidgetKit.framework */; };
+		FF0020E1251A98210006FA84 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF9C80DD2515419300E2F702 /* SwiftUI.framework */; };
+		FF0020E4251A98210006FA84 /* widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0020E3251A98210006FA84 /* widget.swift */; };
+		FF0020E7251A98210006FA84 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF0020E6251A98210006FA84 /* Assets.xcassets */; };
+		FF0020E9251A98210006FA84 /* widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = FF0020E5251A98210006FA84 /* widget.intentdefinition */; };
+		FF0020EA251A98210006FA84 /* widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = FF0020E5251A98210006FA84 /* widget.intentdefinition */; };
+		FF0020ED251A98210006FA84 /* widgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FF0020DF251A98210006FA84 /* widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FF0020F2251A98210006FA84 /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF78753A251532DD00566359 /* DateExtensions.swift */; };
+		FF0020F3251A98210006FA84 /* DomainList.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5F81F0250557290014A17A /* DomainList.swift */; };
+		FF0020F4251A98210006FA84 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2035ED250AA96A00A4D6FE /* UserDefault.swift */; };
+		FF0020F5251A98210006FA84 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF001F0B251A6C8B0006FA84 /* Profile.swift */; };
+		FF0020F6251A98210006FA84 /* UserDefaultKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2035EF250AAB9700A4D6FE /* UserDefaultKeys.swift */; };
+		FF0020F7251A98210006FA84 /* FetchError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF13A3224C8CD26008F5CCD /* FetchError.swift */; };
+		FF0020F8251A98210006FA84 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2035F1250AADA400A4D6FE /* UserSettings.swift */; };
+		FF0020F9251A98210006FA84 /* Skola24Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5718CB24BA923800B72D62 /* Skola24Wrapper.swift */; };
+		FF0020FA251A98210006FA84 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF787558251533D300566359 /* ColorExtensions.swift */; };
+		FF0020FC251A98210006FA84 /* TodayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFA17EE824BBB4C300C383E5 /* TodayController.swift */; };
+		FF0020FD251A98210006FA84 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF9C81572515771600E2F702 /* ProfileController.swift */; };
 		FF2035EE250AA96A00A4D6FE /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2035ED250AA96A00A4D6FE /* UserDefault.swift */; };
 		FF2035F0250AAB9700A4D6FE /* UserDefaultKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2035EF250AAB9700A4D6FE /* UserDefaultKeys.swift */; };
 		FF2035F2250AADA400A4D6FE /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2035F1250AADA400A4D6FE /* UserSettings.swift */; };
@@ -37,6 +56,16 @@
 		FFFFF9DA251920B0000E5D3D /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF9C81572515771600E2F702 /* ProfileController.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		FF0020EB251A98210006FA84 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FF7934C124BA59A600AACE0A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FF0020DE251A98210006FA84;
+			remoteInfo = widgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		FF78738A2515278D00566359 /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -54,6 +83,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				FF0020ED251A98210006FA84 /* widgetExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -71,6 +101,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		08D57F7D1876EE1E5BB2A5A3 /* Pods_widgetExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_widgetExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B2CDFE62826B9218A726E4E /* Pods-watch Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watch Extension.debug.xcconfig"; path = "Target Support Files/Pods-watch Extension/Pods-watch Extension.debug.xcconfig"; sourceTree = "<group>"; };
 		241FEA4384DBDF8FE700778E /* Pods-watch.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-watch.debug.xcconfig"; path = "Target Support Files/Pods-watch/Pods-watch.debug.xcconfig"; sourceTree = "<group>"; };
 		282FF19043FD5B3F57DEF4A5 /* Pods-schema.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-schema.debug.xcconfig"; path = "Target Support Files/Pods-schema/Pods-schema.debug.xcconfig"; sourceTree = "<group>"; };
@@ -80,7 +111,14 @@
 		9270633E2C18FCAE62C2D8EF /* Pods_watch.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_watch.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9292AC049C34B6B3A7994727 /* Pods_schema.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_schema.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94E9D02046C94BF021925F46 /* Pods-schema.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-schema.release.xcconfig"; path = "Target Support Files/Pods-schema/Pods-schema.release.xcconfig"; sourceTree = "<group>"; };
+		A0646BC516DA4CC68B71DCDD /* Pods-widgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-widgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-widgetExtension/Pods-widgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		BE74C7771215BC59855F547A /* Pods-widgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-widgetExtension.release.xcconfig"; path = "Target Support Files/Pods-widgetExtension/Pods-widgetExtension.release.xcconfig"; sourceTree = "<group>"; };
 		FF001F0B251A6C8B0006FA84 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		FF0020DF251A98210006FA84 /* widgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = widgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FF0020E3251A98210006FA84 /* widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = widget.swift; sourceTree = "<group>"; };
+		FF0020E5251A98210006FA84 /* widget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = widget.intentdefinition; sourceTree = "<group>"; };
+		FF0020E6251A98210006FA84 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FF0020E8251A98210006FA84 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FF2035ED250AA96A00A4D6FE /* UserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefault.swift; sourceTree = "<group>"; };
 		FF2035EF250AAB9700A4D6FE /* UserDefaultKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultKeys.swift; sourceTree = "<group>"; };
 		FF2035F1250AADA400A4D6FE /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
@@ -117,6 +155,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		FF0020DC251A98210006FA84 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF0020E1251A98210006FA84 /* SwiftUI.framework in Frameworks */,
+				FF0020E0251A98210006FA84 /* WidgetKit.framework in Frameworks */,
+				4388645EF428562D91404CB5 /* Pods_widgetExtension.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FF7934C624BA59A600AACE0A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -137,6 +185,8 @@
 				7B2E43B154DE54C4C83C567D /* Pods-watch.release.xcconfig */,
 				0B2CDFE62826B9218A726E4E /* Pods-watch Extension.debug.xcconfig */,
 				2F5824D1D40E0332A6DE71B8 /* Pods-watch Extension.release.xcconfig */,
+				A0646BC516DA4CC68B71DCDD /* Pods-widgetExtension.debug.xcconfig */,
+				BE74C7771215BC59855F547A /* Pods-widgetExtension.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -149,8 +199,20 @@
 				9292AC049C34B6B3A7994727 /* Pods_schema.framework */,
 				9270633E2C18FCAE62C2D8EF /* Pods_watch.framework */,
 				4AC88B3447FB463EBF33875B /* Pods_watch_Extension.framework */,
+				08D57F7D1876EE1E5BB2A5A3 /* Pods_widgetExtension.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FF0020E2251A98210006FA84 /* widget */ = {
+			isa = PBXGroup;
+			children = (
+				FF0020E3251A98210006FA84 /* widget.swift */,
+				FF0020E5251A98210006FA84 /* widget.intentdefinition */,
+				FF0020E6251A98210006FA84 /* Assets.xcassets */,
+				FF0020E8251A98210006FA84 /* Info.plist */,
+			);
+			path = widget;
 			sourceTree = "<group>";
 		};
 		FF5F81EC250555010014A17A /* Views */ = {
@@ -188,6 +250,7 @@
 			children = (
 				FF9C80F12515419C00E2F702 /* widgetExtension.entitlements */,
 				FF7934CB24BA59A600AACE0A /* schema */,
+				FF0020E2251A98210006FA84 /* widget */,
 				FF7934CA24BA59A600AACE0A /* Products */,
 				1256C8966C2C40BE7616EB50 /* Pods */,
 				77F94741264FA1E268BD23BD /* Frameworks */,
@@ -198,6 +261,7 @@
 			isa = PBXGroup;
 			children = (
 				FF7934C924BA59A600AACE0A /* Skolschema.app */,
+				FF0020DF251A98210006FA84 /* widgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -243,6 +307,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		FF0020DE251A98210006FA84 /* widgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FF0020EE251A98210006FA84 /* Build configuration list for PBXNativeTarget "widgetExtension" */;
+			buildPhases = (
+				430DEA09635CFE4C3CF86891 /* [CP] Check Pods Manifest.lock */,
+				FF0020DB251A98210006FA84 /* Sources */,
+				FF0020DC251A98210006FA84 /* Frameworks */,
+				FF0020DD251A98210006FA84 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = widgetExtension;
+			productName = widgetExtension;
+			productReference = FF0020DF251A98210006FA84 /* widgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		FF7934C824BA59A600AACE0A /* schema */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FF7934F624BA59AC00AACE0A /* Build configuration list for PBXNativeTarget "schema" */;
@@ -259,6 +341,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				FF0020EC251A98210006FA84 /* PBXTargetDependency */,
 			);
 			name = schema;
 			productName = schema;
@@ -275,6 +358,9 @@
 				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "Victor Forsgren";
 				TargetAttributes = {
+					FF0020DE251A98210006FA84 = {
+						CreatedOnToolsVersion = 12.0;
+					};
 					FF7934C824BA59A600AACE0A = {
 						CreatedOnToolsVersion = 11.5;
 					};
@@ -294,11 +380,20 @@
 			projectRoot = "";
 			targets = (
 				FF7934C824BA59A600AACE0A /* schema */,
+				FF0020DE251A98210006FA84 /* widgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		FF0020DD251A98210006FA84 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF0020E7251A98210006FA84 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FF7934C724BA59A600AACE0A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -313,6 +408,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		430DEA09635CFE4C3CF86891 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-widgetExtension-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		669BDF20A6D02FDDE2E6F339 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -355,6 +472,26 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		FF0020DB251A98210006FA84 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF0020FA251A98210006FA84 /* ColorExtensions.swift in Sources */,
+				FF0020E9251A98210006FA84 /* widget.intentdefinition in Sources */,
+				FF0020F5251A98210006FA84 /* Profile.swift in Sources */,
+				FF0020E4251A98210006FA84 /* widget.swift in Sources */,
+				FF0020F4251A98210006FA84 /* UserDefault.swift in Sources */,
+				FF0020FD251A98210006FA84 /* ProfileController.swift in Sources */,
+				FF0020FC251A98210006FA84 /* TodayController.swift in Sources */,
+				FF0020F8251A98210006FA84 /* UserSettings.swift in Sources */,
+				FF0020F2251A98210006FA84 /* DateExtensions.swift in Sources */,
+				FF0020F6251A98210006FA84 /* UserDefaultKeys.swift in Sources */,
+				FF0020F3251A98210006FA84 /* DomainList.swift in Sources */,
+				FF0020F9251A98210006FA84 /* Skola24Wrapper.swift in Sources */,
+				FF0020F7251A98210006FA84 /* FetchError.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FF7934C524BA59A600AACE0A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -371,6 +508,7 @@
 				FFA17EE924BBB4C300C383E5 /* TodayController.swift in Sources */,
 				FFF13A3124C59AAB008F5CCD /* WeekController.swift in Sources */,
 				FF7934D424BA59A600AACE0A /* ContentView.swift in Sources */,
+				FF0020EA251A98210006FA84 /* widget.intentdefinition in Sources */,
 				FF5718CC24BA923800B72D62 /* Skola24Wrapper.swift in Sources */,
 				FF5F81EF250555DA0014A17A /* ViewMisc.swift in Sources */,
 				FF7934D224BA59A600AACE0A /* schema.xcdatamodeld in Sources */,
@@ -387,6 +525,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		FF0020EC251A98210006FA84 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FF0020DE251A98210006FA84 /* widgetExtension */;
+			targetProxy = FF0020EB251A98210006FA84 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		FF7934DA24BA59AC00AACE0A /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -400,6 +546,56 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		FF0020EF251A98210006FA84 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A0646BC516DA4CC68B71DCDD /* Pods-widgetExtension.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = widgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = 3B37CNMVH7;
+				INFOPLIST_FILE = widget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		FF0020F0251A98210006FA84 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BE74C7771215BC59855F547A /* Pods-widgetExtension.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = widgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = 3B37CNMVH7;
+				INFOPLIST_FILE = widget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 		FF7934F424BA59AC00AACE0A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -526,7 +722,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = schema/Skolschema.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"schema/Preview Content\"";
 				DEVELOPMENT_TEAM = 3B37CNMVH7;
 				ENABLE_PREVIEWS = YES;
@@ -536,7 +732,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.14.0;
+				MARKETING_VERSION = 2.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema;
 				PRODUCT_NAME = Skolschema;
 				SWIFT_VERSION = 5.0;
@@ -552,7 +748,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = schema/Skolschema.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"schema/Preview Content\"";
 				DEVELOPMENT_TEAM = 3B37CNMVH7;
 				ENABLE_PREVIEWS = YES;
@@ -562,7 +758,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.14.0;
+				MARKETING_VERSION = 2.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema;
 				PRODUCT_NAME = Skolschema;
 				SWIFT_VERSION = 5.0;
@@ -573,6 +769,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		FF0020EE251A98210006FA84 /* Build configuration list for PBXNativeTarget "widgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF0020EF251A98210006FA84 /* Debug */,
+				FF0020F0251A98210006FA84 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		FF7934C424BA59A600AACE0A /* Build configuration list for PBXProject "schema" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

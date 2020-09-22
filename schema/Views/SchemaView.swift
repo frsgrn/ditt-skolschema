@@ -240,6 +240,7 @@ struct TodayView: View {
                             HStack {
                                 Button(action: {
                                     todayController.selectedDate = todayController.currentDate
+                                    todayController.load(ProfileManager.getSelectedProfile())
                                 }) {
                                     Text("Du tittar just nu in i framtiden, gå tillbaka till idag?").font(.footnote)
                                 }

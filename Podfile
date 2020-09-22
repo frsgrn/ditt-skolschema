@@ -14,6 +14,15 @@ target 'schema' do
   pod 'RealmSwift'
 end
 
+target 'widgetExtension' do
+  platform :ios, '14.0'
+  use_frameworks!
+
+  pod 'Alamofire', '~> 5.2'
+  pod 'SwiftyJSON', '~> 4.0'
+  pod 'RealmSwift'
+end
+
 
 #target 'watch' do
 #  platform :watchos, '7.0'

@@ -18,9 +18,9 @@ struct TimetableObjectLoad {
 
 
 class TodayController: ObservableObject {
-    @Published var eventList: [Event] = []
+    //@Published var eventList: [Event] = []
     @Published var fetchError: FetchError? = nil
-    @Published var hasLoaded: Bool = false
+    //@Published var hasLoaded: Bool = false
     @Published var selectedDate: Date = Date()
     @Published var currentDate: Date = Date()
     
@@ -28,10 +28,10 @@ class TodayController: ObservableObject {
     
     @Published var timetableObjectLoads: [TimetableObjectLoad] = []
     
-    func load(_ p_profile: p_Profile?) {
+    func load(_ p_profile: p_Profile?, completion: ((TimetableObjectLoad) -> Void)? = nil) {
         self.fetchError = nil
-        self.eventList = []
-        self.hasLoaded = false
+        //self.eventList = []
+        //self.hasLoaded = false
         
         let dayToLoad: Date = self.selectedDate
         
@@ -50,39 +50,55 @@ class TodayController: ObservableObject {
                     self.fetchError = FetchError(message: "Kunde inte hämta signatur")
                     return
                 }
-                self.fetchAndSetObjectTimetable(selection: signature ?? "", selectionType: 4, date: dayToLoad, profile: profile)
+                self.fetchAndSetObjectTimetable(selection: signature ?? "", selectionType: 4, date: dayToLoad, profile: profile, completion: completion)
             }
             return
         }
         if (profile.classGUID != nil) {
-            fetchAndSetObjectTimetable(selection: profile.classGUID!, selectionType: 0, date: dayToLoad, profile: profile)
+            fetchAndSetObjectTimetable(selection: profile.classGUID!, selectionType: 0, date: dayToLoad, profile: profile, completion: completion)
         }
         else if (profile.teacherGUID != nil) {
-            fetchAndSetObjectTimetable(selection: profile.teacherGUID!, selectionType: 7, date: dayToLoad, profile: profile)
+            fetchAndSetObjectTimetable(selection: profile.teacherGUID!, selectionType: 7, date: dayToLoad, profile: profile, completion: completion)
         }
     }
     
-    private func fetchAndSetObjectTimetable(selection: String, selectionType: Int, date: Date, profile: p_Profile) {
+    private func fetchAndSetObjectTimetable(selection: String, selectionType: Int, date: Date, profile: p_Profile, completion: ((TimetableObjectLoad) -> Void)? = nil) {
         if (TodayController.getDayNumberOfWeek(from: date) - 1 > 5 || TodayController.getDayNumberOfWeek(from: date) - 1 == 0) {
-            self.addTimetableObjectLoad(eventList: [], week: DateExtensions.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: nil)
+            let timetableObjectLoad = TimetableObjectLoad(eventList: [], week: DateExtensions.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: nil)
+            self.addTimetableObjectLoad(timetableObjectLoad: timetableObjectLoad)
+            if (completion != nil) {
+                completion!(timetableObjectLoad)
+            }
+            //self.addTimetableObjectLoad(eventList: [], week: DateExtensions.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: nil)
             return
         }
         Skola24Wrapper.getObjectTimetable(selection: selection, selectionType: selectionType, school: School(unitGuid: profile.schoolGUID, unitId: "Skola", hostName: profile.domain), timeframe: Timeframe(start: date.startOfWeek!, end: date.endOfWeek!, dayOfWeek: TodayController.getDayNumberOfWeek(from: date) - 1), selectedDate: date) { (eventList, fetchError) -> () in
             if (fetchError != nil) {
-                self.addTimetableObjectLoad(eventList: [], week: DateExtensions.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: fetchError)
+                //self.addTimetableObjectLoad(eventList: [], week: DateExtensions.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: fetchError)
+                let timetableObjectLoad = TimetableObjectLoad(eventList: [], week: DateExtensions.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: fetchError)
+                self.addTimetableObjectLoad(timetableObjectLoad: timetableObjectLoad)
+                if (completion != nil) {
+                    completion!(timetableObjectLoad)
+                }
                 return
             }
             var eventList_ = eventList
             if (self.settings.removeLunch) {
                 eventList_ = eventList.filter {!$0.title.lowercased().contains("lunch")}
             }
-            self.addTimetableObjectLoad(eventList: eventList_, week: DateExtensions.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: nil)
+            //self.addTimetableObjectLoad(eventList: eventList_, week: DateExtensions.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: nil)
+            let timetableObjectLoad = TimetableObjectLoad(eventList: eventList_, week: DateExtensions.getWeekFrom(date: self.selectedDate), dayNum: TodayController.getDayNumberOfWeek(from: date), fetchError: nil)
+            if (completion != nil) {
+                completion!(timetableObjectLoad)
+            }
+            self.addTimetableObjectLoad(timetableObjectLoad: timetableObjectLoad)
         }
     }
     
-    private func addTimetableObjectLoad(eventList: [Event], week: Int, dayNum: Int, fetchError: FetchError?) {
-        let timetableObjectLoad = TimetableObjectLoad(eventList: eventList, week: week, dayNum: dayNum, fetchError: fetchError)
-        if (getTimetableObjectLoadFromDayWeek(dayNum: dayNum, week: week) != nil) {
+    //private func addTimetableObjectLoad(eventList: [Event], week: Int, dayNum: Int, fetchError: FetchError?) {
+    private func addTimetableObjectLoad(timetableObjectLoad: TimetableObjectLoad) {
+        //let timetableObjectLoad = TimetableObjectLoad(eventList: eventList, week: week, dayNum: dayNum, fetchError: fetchError)
+        if (getTimetableObjectLoadFromDayWeek(dayNum: timetableObjectLoad.dayNum, week: timetableObjectLoad.week) != nil) {
             setTimetableObjectLoad(timetableObjectLoad: timetableObjectLoad)
         }
         else {

@@ -10,7 +10,7 @@ import Foundation
 //import CoreData
 import SwiftUI
 //import UIKit
-
+import WidgetKit
 import RealmSwift
 
 /*@objc(Profile_)
@@ -166,6 +166,7 @@ class ProfileManager {
     
     public static func selectProfile(_ profile: p_Profile) {
         UserDefaults(suiteName: "group.dittskolschema")?.setValue(profile.id, forKey: "selectedProfileId")
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     public static func getRealmConfig() -> Realm.Configuration {
