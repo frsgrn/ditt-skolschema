@@ -166,7 +166,7 @@ struct HorizontalWeekPicker: View {
                 return Color(UIColor.label)
             }
             else {
-                return Color(UIColor.systemRed)
+                return Color(UIColor.systemBlue)
             }
         }
         else {
@@ -179,7 +179,7 @@ struct HorizontalWeekPicker: View {
             return Color(UIColor.systemBackground)
         }
         else if (index == 0) {
-            return Color(UIColor.systemRed)
+            return Color(UIColor.systemBlue)
         }
         else {
             return Color(UIColor.label)
@@ -298,60 +298,6 @@ struct TodayView: View {
     }
 }
 
-// MARK: Event detail view
-struct EventDetailView : View {
-    let event: Event
-    @EnvironmentObject var todayController: TodayController
-
-    var body: some View {
-        VStack {
-            if (self.todayController.isActive(from: self.event.start, to: self.event.end)) {
-                //Section {
-                    VStack {
-                        HStack {
-                            Text("Pågår just nu").bold()
-                            Spacer()
-                        }
-                        ProgressView(value: self.todayController.completionRate(start: self.event.start, end: self.event.end, current: self.todayController.currentDate))
-                        HStack {
-                            Text("\(TodayController.minutesToHourMinuteString(minutes: DateExtensions.getMinutesFromDates(from: self.todayController.currentDate, to: self.event.end))) återstår").font(.footnote).bold()
-                            Spacer()
-                        }
-                    }.foregroundColor(Color(UIColor.systemBlue)).padding()
-                //}
-            }
-        List {
-            Section(header: Text("Tidsram"), footer: Text("Det finns alltid en risk att appen läser av ditt schema felaktigt eller att det har skett en schemaändring som inte visas i Skola24 systemet.")) {
-                HStack {
-                    Text("Börjar")
-                    Spacer()
-                    Text(event.start.localString())
-                }
-                HStack {
-                    Text("Slutar")
-                    Spacer()
-                    Text(event.end.localString())
-                }
-                HStack {
-                    Text("Längd")
-                    Spacer()
-                    Text(TodayController.minutesToHourMinuteString(minutes: DateExtensions.getMinutesFromDates(from: event.start, to: event.end)))
-                }
-            }
-            Section(header: Text("Mer information om lektionen")) {
-                Text(event.information)
-                HStack {
-                    Text("Färg")
-                    Spacer()
-                    //Circle().strokeBorder(Color(event.color.darker(by: 30)!), lineWidth: 2).background(Circle().foregroundColor(Color(event.color))).frame(width: 20, height: 20)
-                    ColorCircle(uiColor: event.color).frame(width: 20, height: 20)
-                }
-            }
-        }.listStyle(InsetGroupedListStyle())
-        }.navigationBarTitle(Text(event.title), displayMode: .inline)
-    }
-}
-
 //MARK: Horizontal date picker
 struct HorizontalDatePicker : View {
     
@@ -390,7 +336,7 @@ struct HorizontalDatePicker : View {
                 return Color(UIColor.label)
             }
             else {
-                return Color(UIColor.systemRed)
+                return Color(UIColor.systemBlue)
             }
         }
         else {
@@ -403,7 +349,7 @@ struct HorizontalDatePicker : View {
             return Color(UIColor.systemBackground)
         }
         else if (index == 0) {
-            return Color(UIColor.systemRed)
+            return Color(UIColor.systemBlue)
         }
         else {
             return Color(UIColor.label)

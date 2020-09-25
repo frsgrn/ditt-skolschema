@@ -41,6 +41,10 @@ struct Provider: TimelineProvider {
                 entries.append(entry2)
             }
             
+            if (timetableObjectLoad.eventList.count == 0) {
+                entries.append(SimpleEntry(date: Date(), currentDate: Date(), timetableObjectLoad: timetableObjectLoad, isPreview: false))
+            }
+            
             let now = Calendar.current.dateComponents(in: .current, from: Date().startOfDay)
             
             let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + 1, hour: now.hour! + 3)
@@ -63,7 +67,9 @@ struct SimpleEntry: TimelineEntry {
 
 struct widgetEntryView : View {
     var entry: Provider.Entry
-    @Environment(\.widgetFamily) var family
+    @Environment(\.widgetFamily) var family: WidgetFamily
+    
+    @State var eventCap = 2
     
     func filterEventList() -> [Event] {
         var eventList: [Event] = []
@@ -76,7 +82,7 @@ struct widgetEntryView : View {
     }
     
     func numNotShown() -> Int {
-        return filterEventList().count - 3
+        return filterEventList().count - eventCap
     }
     
     var body: some View {
@@ -86,9 +92,7 @@ struct widgetEntryView : View {
                 HStack {
                     Text("Blablbbalal").font(.footnote).foregroundColor(Color(UIColor.secondaryLabel)).bold()
                     Spacer()
-                    
                 }
-                
                 HStack {
                     Text("hejsan")
                     Image(systemName: "minus")
@@ -112,18 +116,22 @@ struct widgetEntryView : View {
                 Spacer()
             }.padding().redacted(reason: .placeholder)
         }
-        else if (entry.timetableObjectLoad != nil && filterEventList().count > 0) {
+        else if (entry.timetableObjectLoad != nil) {
             VStack {
                 if (ProfileManager.getSelectedProfile() != nil) {
                     HStack {
-                        Text(ProfileManager.getSelectedProfile()!.title).font(.footnote).foregroundColor(Color(UIColor.secondaryLabel)).bold()
+                        Text(ProfileManager.getSelectedProfile()!.title).bold()
                         Spacer()
-                        
-                    }
+                        if (family == .systemMedium) {
+                            Text(entry.date.dayDate())
+                        }
+                    }.font(.footnote).foregroundColor(Color(UIColor.secondaryLabel))
                 }
-                ForEach(filterEventList().indices.prefix(3), id: \.self) { index in
-                    // if (entry.date < entry.timetableObjectLoad!.eventList[index].end) {
+                ForEach(filterEventList().indices.prefix(eventCap), id: \.self) { index in
+                    //HStack {
                     HStack {
+                        //Rectangle().frame(width: 5).background(Color(filterEventList()[index].uiColor))
+                        ColorBar(uiColor: filterEventList()[index].color)
                         VStack {
                             HStack {
                                 Text(filterEventList()[index].title).truncationMode(.tail)
@@ -131,14 +139,33 @@ struct widgetEntryView : View {
                             }.font(.footnote)
                             
                             HStack {
-                                Text(Event.getHourMinuteString(date: filterEventList()[index].start))
+                                Timespan(from: filterEventList()[index].start, to: filterEventList()[index].end)
+                                /*Text(Event.getHourMinuteString(date: filterEventList()[index].start))
                                 Image(systemName: "minus")
-                                Text(Event.getHourMinuteString(date: filterEventList()[index].end))
+                                Text(Event.getHourMinuteString(date: filterEventList()[index].end))*/
                                 Spacer()
                             }.foregroundColor(Color(UIColor.secondaryLabel)).font(.caption)
                         }
-                    }
-                    // }
+                    }.frame(height: 35)
+                    //}
+                }
+                if (filterEventList().count <= eventCap) {
+                    HStack(spacing: 5) {
+                        if (entry.timetableObjectLoad!.eventList.count > 0) {
+                            Text("\(Event.getHourMinuteString(date: entry.timetableObjectLoad!.eventList[entry.timetableObjectLoad!.eventList.count-1].end))").foregroundColor(Color(UIColor.secondaryLabel))
+                            Text("slut för idag")
+                            //if (entry.timetableObjectLoad!.eventList.count > 0) {
+                                
+                                //Image(systemName: "minus")
+                            //}
+                            //Text("slut")//.foregroundColor(Color(UIColor.secondaryLabel))
+                            
+                        }
+                        else {
+                            Text("Ingenting för idag")
+                        }
+                        Spacer()
+                    }.font(.caption)
                 }
                 // Text("\(entry.timetableObjectLoad!.eventList.count)")
                 if (numNotShown() > 0) {
@@ -151,7 +178,7 @@ struct widgetEntryView : View {
             }.padding()
         }
         else {
-            Text("Slut för idag").bold().padding()
+            Text("Kunde inte hämta schema").bold().padding()
         }
         
     }

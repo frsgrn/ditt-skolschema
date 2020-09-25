@@ -12,7 +12,7 @@ import SwiftUI
 //MARK: Schema card stack
 struct SchemaCardStack: View {
     @EnvironmentObject var todayController: TodayController
-    @FetchRequest(entity: Profile.entity(), sortDescriptors: []) var profiles: FetchedResults<Profile>
+    //@FetchRequest(entity: Profile.entity(), sortDescriptors: []) var profiles: FetchedResults<Profile>
     
     // FIXME: Gå efter något annat än bara selectedDate?
     func getEventList() -> [Event] {
@@ -48,6 +48,75 @@ struct SchemaCardStack: View {
         return false
     }
 }
+
+struct Timespan: View {
+    @State var from: Date
+    @State var to: Date
+    
+    var body: some View {
+        HStack {
+            Text(Event.getHourMinuteString(date: from))
+            Image(systemName: "minus")
+            Text(Event.getHourMinuteString(date: to))
+        }
+    }
+}
+
+
+// MARK: Event detail view
+struct EventDetailView : View {
+    let event: Event
+    @EnvironmentObject var todayController: TodayController
+
+    var body: some View {
+        VStack {
+            if (self.todayController.isActive(from: self.event.start, to: self.event.end)) {
+                //Section {
+                    VStack {
+                        HStack {
+                            Text("Pågår just nu").bold()
+                            Spacer()
+                        }
+                        ProgressView(value: self.todayController.completionRate(start: self.event.start, end: self.event.end, current: self.todayController.currentDate))
+                        HStack {
+                            Text("\(TodayController.minutesToHourMinuteString(minutes: DateExtensions.getMinutesFromDates(from: self.todayController.currentDate, to: self.event.end))) återstår").font(.footnote).bold()
+                            Spacer()
+                        }
+                    }.foregroundColor(Color(UIColor.systemBlue)).padding()
+                //}
+            }
+        List {
+            Section(header: Text("Tidsram"), footer: Text("Det finns alltid en risk att appen läser av ditt schema felaktigt eller att det har skett en schemaändring som inte visas i Skola24 systemet.")) {
+                HStack {
+                    Text("Börjar")
+                    Spacer()
+                    Text(event.start.localString())
+                }
+                HStack {
+                    Text("Slutar")
+                    Spacer()
+                    Text(event.end.localString())
+                }
+                HStack {
+                    Text("Längd")
+                    Spacer()
+                    Text(TodayController.minutesToHourMinuteString(minutes: DateExtensions.getMinutesFromDates(from: event.start, to: event.end)))
+                }
+            }
+            Section(header: Text("Mer information om lektionen")) {
+                Text(event.information)
+                HStack {
+                    Text("Färg")
+                    Spacer()
+                    //Circle().strokeBorder(Color(event.color.darker(by: 30)!), lineWidth: 2).background(Circle().foregroundColor(Color(event.color))).frame(width: 20, height: 20)
+                    ColorCircle(uiColor: event.color).frame(width: 20, height: 20)
+                }
+            }
+        }.listStyle(InsetGroupedListStyle())
+        }.navigationBarTitle(Text(event.title), displayMode: .inline)
+    }
+}
+
 
 //MARK: Schema card
 struct SchemaCard: View {
@@ -119,5 +188,26 @@ struct ColorCircle: View {
     
     var body: some View {
         Circle().strokeBorder(Color(strokeBorderColor()), lineWidth: 2).background(Circle().foregroundColor(Color(uiColor)))
+    }
+}
+
+struct ColorBar: View {
+    let uiColor: UIColor
+    @Environment(\.colorScheme) var colorScheme
+    
+    func strokeBorderColor() -> UIColor {
+        if (colorScheme == .light) {
+            return uiColor.darker(by: 10)!
+        }
+        else {
+            return uiColor.lighter(by: 10)!
+        }
+    }
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            Rectangle().frame(width: 1).foregroundColor(Color(strokeBorderColor()))
+            Rectangle().frame(width: 3).foregroundColor(Color(uiColor))
+        }.cornerRadius(2)
     }
 }

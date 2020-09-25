@@ -46,6 +46,7 @@ struct ContentView: View {
                                 moc.delete(profileOld)
                                 try? moc.save()
                             }
+                            ProfileManager.selectProfile(ProfileManager.getProfiles()[0])
                         }
                     }
                 }.navigationViewStyle(StackNavigationViewStyle()).sheet(isPresented: self.$showingWelcomeSheetState) {
