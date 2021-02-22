@@ -129,14 +129,14 @@ class ProfileManager {
         return profiles[0]
     }*/
     public static func addProfile(profile: p_Profile) {
-        let realm = try! Realm(configuration: getRealmConfig())
+        let realm = try! Realm(configuration: PersistentRealmStack.getRealmConfig())
         try! realm.write {
             realm.add(profile)
         }
     }
     
     public static func removeProfile(index: Int) {
-        let realm = try! Realm(configuration: getRealmConfig())
+        let realm = try! Realm(configuration: PersistentRealmStack.getRealmConfig())
         let profiles = getProfiles()
         try? realm.write {
             realm.delete(profiles[index])
@@ -155,7 +155,7 @@ class ProfileManager {
     }
     
     public static func getProfiles() -> Results<p_Profile> {
-        let realm = try! Realm(configuration: getRealmConfig())
+        let realm = try! Realm(configuration: PersistentRealmStack.getRealmConfig())
         let profiles = realm.objects(p_Profile.self)
         return profiles
     }
@@ -167,13 +167,5 @@ class ProfileManager {
     public static func selectProfile(_ profile: p_Profile) {
         UserDefaults(suiteName: "group.dittskolschema")?.setValue(profile.id, forKey: "selectedProfileId")
         WidgetCenter.shared.reloadAllTimelines()
-    }
-    
-    public static func getRealmConfig() -> Realm.Configuration {
-        let fileURL = FileManager.default
-            .containerURL(forSecurityApplicationGroupIdentifier: "group.dittskolschema")!
-            .appendingPathComponent("default.realm")
-        let config = Realm.Configuration(fileURL: fileURL)
-        return config
     }
 }

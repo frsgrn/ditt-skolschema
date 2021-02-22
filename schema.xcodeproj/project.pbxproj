@@ -36,7 +36,6 @@
 		FF448EBC24BF4B7600408A45 /* SchemaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF448EBB24BF4B7600408A45 /* SchemaView.swift */; };
 		FF5718CC24BA923800B72D62 /* Skola24Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5718CB24BA923800B72D62 /* Skola24Wrapper.swift */; };
 		FF5B002B24ECF7B700E2805F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF5B002A24ECF7B700E2805F /* GoogleService-Info.plist */; };
-		FF5F81EB24FA6CBC0014A17A /* ProfileControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5F81EA24FA6CBC0014A17A /* ProfileControllerOld.swift */; };
 		FF5F81EF250555DA0014A17A /* ViewMisc.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5F81EE250555DA0014A17A /* ViewMisc.swift */; };
 		FF5F81F1250557290014A17A /* DomainList.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5F81F0250557290014A17A /* DomainList.swift */; };
 		FF78746425152DF300566359 /* TodayCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF78746325152DF300566359 /* TodayCardView.swift */; };
@@ -51,6 +50,12 @@
 		FF7934DC24BA59AC00AACE0A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FF7934DA24BA59AC00AACE0A /* LaunchScreen.storyboard */; };
 		FFA17EE924BBB4C300C383E5 /* TodayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFA17EE824BBB4C300C383E5 /* TodayController.swift */; };
 		FFBCB5F0251DC0A100AC1A28 /* TodayCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF78746325152DF300566359 /* TodayCardView.swift */; };
+		FFBCB637251E418A00AC1A28 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBCB636251E418A00AC1A28 /* NotificationController.swift */; };
+		FFBCB63B251E534A00AC1A28 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBCB63A251E534A00AC1A28 /* Notification.swift */; };
+		FFBCB63D251F99A300AC1A28 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBCB63A251E534A00AC1A28 /* Notification.swift */; };
+		FFBCB642251F9A5700AC1A28 /* PersistentRealmStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBCB641251F9A5700AC1A28 /* PersistentRealmStack.swift */; };
+		FFBCB646251F9A8100AC1A28 /* PersistentRealmStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBCB641251F9A5700AC1A28 /* PersistentRealmStack.swift */; };
+		FFBCB649251F9ACF00AC1A28 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFBCB636251E418A00AC1A28 /* NotificationController.swift */; };
 		FFF13A2D24C597ED008F5CCD /* ProfileManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF13A2C24C597ED008F5CCD /* ProfileManagerView.swift */; };
 		FFF13A3124C59AAB008F5CCD /* WeekController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF13A3024C59AAB008F5CCD /* WeekController.swift */; };
 		FFF13A3324C8CD26008F5CCD /* FetchError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF13A3224C8CD26008F5CCD /* FetchError.swift */; };
@@ -129,7 +134,6 @@
 		FF5718CB24BA923800B72D62 /* Skola24Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skola24Wrapper.swift; sourceTree = "<group>"; };
 		FF5B002924E9D02A00E2805F /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		FF5B002A24ECF7B700E2805F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
-		FF5F81EA24FA6CBC0014A17A /* ProfileControllerOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileControllerOld.swift; sourceTree = "<group>"; };
 		FF5F81EE250555DA0014A17A /* ViewMisc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewMisc.swift; sourceTree = "<group>"; };
 		FF5F81F0250557290014A17A /* DomainList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainList.swift; sourceTree = "<group>"; };
 		FF78735B2515089E00566359 /* sv */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = sv; path = sv.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -150,6 +154,9 @@
 		FF9C80F12515419C00E2F702 /* widgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widgetExtension.entitlements; sourceTree = "<group>"; };
 		FF9C81572515771600E2F702 /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		FFA17EE824BBB4C300C383E5 /* TodayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayController.swift; sourceTree = "<group>"; };
+		FFBCB636251E418A00AC1A28 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		FFBCB63A251E534A00AC1A28 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		FFBCB641251F9A5700AC1A28 /* PersistentRealmStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentRealmStack.swift; sourceTree = "<group>"; };
 		FFF13A2C24C597ED008F5CCD /* ProfileManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileManagerView.swift; sourceTree = "<group>"; };
 		FFF13A3024C59AAB008F5CCD /* WeekController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekController.swift; sourceTree = "<group>"; };
 		FFF13A3224C8CD26008F5CCD /* FetchError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchError.swift; sourceTree = "<group>"; };
@@ -242,6 +249,7 @@
 				FF2035F1250AADA400A4D6FE /* UserSettings.swift */,
 				FF78753A251532DD00566359 /* DateExtensions.swift */,
 				FF787558251533D300566359 /* ColorExtensions.swift */,
+				FFBCB63A251E534A00AC1A28 /* Notification.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -270,6 +278,7 @@
 		FF7934CB24BA59A600AACE0A /* schema */ = {
 			isa = PBXGroup;
 			children = (
+				FFBCB641251F9A5700AC1A28 /* PersistentRealmStack.swift */,
 				FF78756A251536C900566359 /* Skolschema.entitlements */,
 				FF5F81ED2505551F0014A17A /* Models */,
 				FF5F81EC250555010014A17A /* Views */,
@@ -300,7 +309,7 @@
 				FF9C81572515771600E2F702 /* ProfileController.swift */,
 				FFA17EE824BBB4C300C383E5 /* TodayController.swift */,
 				FFF13A3024C59AAB008F5CCD /* WeekController.swift */,
-				FF5F81EA24FA6CBC0014A17A /* ProfileControllerOld.swift */,
+				FFBCB636251E418A00AC1A28 /* NotificationController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -488,7 +497,10 @@
 				FF0020F8251A98210006FA84 /* UserSettings.swift in Sources */,
 				FF0020F2251A98210006FA84 /* DateExtensions.swift in Sources */,
 				FF0020F6251A98210006FA84 /* UserDefaultKeys.swift in Sources */,
+				FFBCB63D251F99A300AC1A28 /* Notification.swift in Sources */,
+				FFBCB649251F9ACF00AC1A28 /* NotificationController.swift in Sources */,
 				FF0020F3251A98210006FA84 /* DomainList.swift in Sources */,
+				FFBCB646251F9A8100AC1A28 /* PersistentRealmStack.swift in Sources */,
 				FF0020F9251A98210006FA84 /* Skola24Wrapper.swift in Sources */,
 				FF0020F7251A98210006FA84 /* FetchError.swift in Sources */,
 			);
@@ -498,12 +510,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FFBCB637251E418A00AC1A28 /* NotificationController.swift in Sources */,
 				FFFFF9DA251920B0000E5D3D /* ProfileController.swift in Sources */,
 				FF2035F0250AAB9700A4D6FE /* UserDefaultKeys.swift in Sources */,
 				FF78753B251532DD00566359 /* DateExtensions.swift in Sources */,
 				FF448EBA23EBF66A00408A45 /* NewProfileFlowView.swift in Sources */,
 				FF7934CD24BA59A600AACE0A /* AppDelegate.swift in Sources */,
 				FF2035F4250AB04500A4D6FE /* SettingsView.swift in Sources */,
+				FFBCB642251F9A5700AC1A28 /* PersistentRealmStack.swift in Sources */,
 				FFF13A2D24C597ED008F5CCD /* ProfileManagerView.swift in Sources */,
 				FF2035EE250AA96A00A4D6FE /* UserDefault.swift in Sources */,
 				FF7934CF24BA59A600AACE0A /* SceneDelegate.swift in Sources */,
@@ -513,11 +527,11 @@
 				FF0020EA251A98210006FA84 /* widget.intentdefinition in Sources */,
 				FF5718CC24BA923800B72D62 /* Skola24Wrapper.swift in Sources */,
 				FF5F81EF250555DA0014A17A /* ViewMisc.swift in Sources */,
+				FFBCB63B251E534A00AC1A28 /* Notification.swift in Sources */,
 				FF7934D224BA59A600AACE0A /* schema.xcdatamodeld in Sources */,
 				FF001F0C251A6C8B0006FA84 /* Profile.swift in Sources */,
 				FF448EBC24BF4B7600408A45 /* SchemaView.swift in Sources */,
 				FFF13A3324C8CD26008F5CCD /* FetchError.swift in Sources */,
-				FF5F81EB24FA6CBC0014A17A /* ProfileControllerOld.swift in Sources */,
 				FF5F81F1250557290014A17A /* DomainList.swift in Sources */,
 				FF78746425152DF300566359 /* TodayCardView.swift in Sources */,
 				FF2035F2250AADA400A4D6FE /* UserSettings.swift in Sources */,
@@ -564,7 +578,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.15.1;
+				MARKETING_VERSION = 2.17;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -589,7 +603,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.15.1;
+				MARKETING_VERSION = 2.17;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -734,7 +748,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.15.1;
+				MARKETING_VERSION = 2.17;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema;
 				PRODUCT_NAME = Skolschema;
 				SWIFT_VERSION = 5.0;
@@ -760,7 +774,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.15.1;
+				MARKETING_VERSION = 2.17;
 				PRODUCT_BUNDLE_IDENTIFIER = com.victorforsgren.dittskolschema;
 				PRODUCT_NAME = Skolschema;
 				SWIFT_VERSION = 5.0;

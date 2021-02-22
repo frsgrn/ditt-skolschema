@@ -19,8 +19,10 @@ struct ProfileManagerView: View {
     var body: some View {
         NavigationView {
         List {
+            Section(header: Text("Dina scheman")) {
                 //ForEach(profiles, id: \.id) { profile in
                 ProfileList()
+            }
         }.navigationBarTitle("Hantera scheman", displayMode: .automatic)
             .navigationBarItems(leading: EditButton(), trailing: Button(action: {
                 self.showingDetail.toggle()

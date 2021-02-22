@@ -15,9 +15,9 @@ struct SettingsView: View {
         NavigationView {
             List {
                 Section(header: Text("Dagen")) {
-                    Toggle(isOn: $settings.showColorCircleInTodayView) {
+                    /*Toggle(isOn: $settings.showColorCircleInTodayView) {
                         Text("Visa lektionens färg bredvid kursnamnet")
-                    }
+                    }*/
                     Toggle(isOn: $settings.removeLunch) {
                         Text("Ta bort \"Lunch\" från schemat")
                     }

@@ -128,10 +128,8 @@ struct widgetEntryView : View {
                     }.font(.footnote).foregroundColor(Color(UIColor.secondaryLabel))
                 }
                 ForEach(filterEventList().indices.prefix(eventCap), id: \.self) { index in
-                    //HStack {
                     HStack {
-                        //Rectangle().frame(width: 5).background(Color(filterEventList()[index].uiColor))
-                        ColorBar(uiColor: filterEventList()[index].color)
+                        ColorBar(uiColor: UIColor.systemGray4)
                         VStack {
                             HStack {
                                 Text(filterEventList()[index].title).truncationMode(.tail)
@@ -140,26 +138,16 @@ struct widgetEntryView : View {
                             
                             HStack {
                                 Timespan(from: filterEventList()[index].start, to: filterEventList()[index].end)
-                                /*Text(Event.getHourMinuteString(date: filterEventList()[index].start))
-                                Image(systemName: "minus")
-                                Text(Event.getHourMinuteString(date: filterEventList()[index].end))*/
                                 Spacer()
                             }.foregroundColor(Color(UIColor.secondaryLabel)).font(.caption)
                         }
                     }.frame(height: 35)
-                    //}
                 }
                 if (filterEventList().count <= eventCap) {
                     HStack(spacing: 5) {
                         if (entry.timetableObjectLoad!.eventList.count > 0) {
                             Text("\(Event.getHourMinuteString(date: entry.timetableObjectLoad!.eventList[entry.timetableObjectLoad!.eventList.count-1].end))").foregroundColor(Color(UIColor.secondaryLabel))
                             Text("slut för idag")
-                            //if (entry.timetableObjectLoad!.eventList.count > 0) {
-                                
-                                //Image(systemName: "minus")
-                            //}
-                            //Text("slut")//.foregroundColor(Color(UIColor.secondaryLabel))
-                            
                         }
                         else {
                             Text("Ingenting för idag")
@@ -167,7 +155,6 @@ struct widgetEntryView : View {
                         Spacer()
                     }.font(.caption)
                 }
-                // Text("\(entry.timetableObjectLoad!.eventList.count)")
                 if (numNotShown() > 0) {
                     HStack {
                         Text("+ \(numNotShown())").font(.footnote).foregroundColor(Color(UIColor.secondaryLabel))

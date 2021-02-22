@@ -50,8 +50,8 @@ struct SchemaCardStack: View {
 }
 
 struct Timespan: View {
-    @State var from: Date
-    @State var to: Date
+    var from: Date
+    var to: Date
     
     var body: some View {
         HStack {
@@ -105,12 +105,11 @@ struct EventDetailView : View {
             }
             Section(header: Text("Mer information om lektionen")) {
                 Text(event.information)
-                HStack {
+                /*HStack {
                     Text("Färg")
                     Spacer()
-                    //Circle().strokeBorder(Color(event.color.darker(by: 30)!), lineWidth: 2).background(Circle().foregroundColor(Color(event.color))).frame(width: 20, height: 20)
                     ColorCircle(uiColor: event.color).frame(width: 20, height: 20)
-                }
+                }*/
             }
         }.listStyle(InsetGroupedListStyle())
         }.navigationBarTitle(Text(event.title), displayMode: .inline)
@@ -135,10 +134,9 @@ struct SchemaCard: View {
                     }.font(.footnote).foregroundColor(Color(UIColor.systemBlue))
                 }
                 HStack {
-                    //Circle().strokeBorder(Color(event.color.darker(by: 30)!), lineWidth: 2).background(Circle().foregroundColor(Color(event.color))).frame(width: 12, height: 12)
-                    if (settings.showColorCircleInTodayView) {
+                    /*if (settings.showColorCircleInTodayView) {
                         ColorCircle(uiColor: event.color).frame(width: 12, height: 12)
-                    }
+                    }*/
                     Text(event.title).font(.headline)
                     Spacer()
                 }
@@ -206,8 +204,8 @@ struct ColorBar: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            Rectangle().frame(width: 1).foregroundColor(Color(strokeBorderColor()))
-            Rectangle().frame(width: 3).foregroundColor(Color(uiColor))
+            //Rectangle().frame(width: 1).foregroundColor(Color(strokeBorderColor()))
+            Rectangle().frame(width: 4).foregroundColor(Color(uiColor))
         }.cornerRadius(2)
     }
 }

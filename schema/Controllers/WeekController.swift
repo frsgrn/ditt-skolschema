@@ -75,12 +75,13 @@ class WeekController: ObservableObject {
         let renderer = UIGraphicsImageRenderer(size: size)
         let img = renderer.image { ctx in
             var sortedTimetable = timetableJson["boxList"].arrayValue
-            sortedTimetable.sort {
+            /*sortedTimetable.sort {
                 Int($0["type"].stringValue)! > Int($1["type"].stringValue)!
-            }
+            }*/
             for text in sortedTimetable {
-                ctx.cgContext.setStrokeColor(ColorExtensions.hexStringToUIColor(hex: text["fcolor"].stringValue).cgColor)
-                ctx.cgContext.setFillColor(ColorExtensions.hexStringToUIColor(hex: text["bcolor"].stringValue).cgColor)
+                print(text)
+                ctx.cgContext.setStrokeColor(ColorExtensions.hexStringToUIColor(hex: text["fColor"].stringValue).cgColor)
+                ctx.cgContext.setFillColor(ColorExtensions.hexStringToUIColor(hex: text["bColor"].stringValue).cgColor)
                 ctx.cgContext.addRect(CGRect(x: text["x"].int!, y: text["y"].int!, width: text["width"].int!, height: text["height"].int!))
                 ctx.cgContext.drawPath(using: .fillStroke)
             }
@@ -92,7 +93,7 @@ class WeekController: ObservableObject {
                 let attrs: [NSAttributedString.Key: Any] = [
                     .font: (text["bold"].boolValue ? UIFont.boldSystemFont(ofSize: CGFloat(text["fontsize"].floatValue)) : UIFont.systemFont(ofSize: CGFloat(text["fontsize"].floatValue))),
                     .paragraphStyle: paragraphStyle,
-                    .foregroundColor: ColorExtensions.hexStringToUIColor(hex: text["fcolor"].stringValue)
+                    .foregroundColor: ColorExtensions.hexStringToUIColor(hex: text["fColor"].stringValue)
                 ]
                 
                 let string = text["text"].stringValue

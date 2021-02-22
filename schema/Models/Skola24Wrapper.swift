@@ -45,7 +45,7 @@ struct Selection {
 }
 
 struct Event : Identifiable {
-    let id = UUID()
+    var id = UUID().uuidString
     var start: Date
     var hasStart = false
     var end: Date
@@ -57,7 +57,7 @@ struct Event : Identifiable {
     var width: Int = -1
     var height: Int = -1
     
-    var color: UIColor = UIColor.blue
+    // var color: UIColor = UIColor.blue
     
     static func getHourMinuteString(date: Date) -> String{
         let formatter = DateFormatter()
@@ -154,6 +154,15 @@ class Skola24Wrapper{
         }
     }
     
+    static func calculateYear(week: Int) -> Int {
+        if (week < DateExtensions.getWeekFrom(date: Date())) {
+            return Calendar.current.component(.year, from: Date()) + 1
+        }
+        else {
+            return Calendar.current.component(.year, from: Date())
+        }
+    }
+    
     static func getTimetable(selection: String, selectionType: Int, size: CGSize, school: School, week: Int, completion: @escaping((JSON?, FetchError?) -> ())) {
         
         getRenderKey() { (key, fetchError) in
@@ -164,6 +173,8 @@ class Skola24Wrapper{
             else if(key == nil) {
                 completion(nil, FetchError(message: "Kunde inte ladda nyckeln"))
             }
+            print("week")
+            print(week)
             AF.request("https://web.skola24.se/api/render/timetable", method: .post, parameters: JSON([
                 "selection": selection,
                 "unitGuid": school.unitGuid,
@@ -174,24 +185,30 @@ class Skola24Wrapper{
                 "height": size.height,
                 "width": size.width,
                 "renderKey": key,
+                "customerKey": "",
+                "privateSelectionMode": false,
+                "privateFreeTextMode": false,
                 "host": school.hostName,
                 "periodText": "",
                 "privateMode": JSON.null,
                 "scheduleDay": 0,
                 "showHeader": false,
-                "week": week
+                "week": week,
+                "year": calculateYear(week: week)
             ]), encoder: JSONParameterEncoder.sortedKeys, headers: headers).responseJSON { response in
                 do {
                     if (response.data == nil) {
                         throw NSError()
                     }
                     let json = try JSON(data: response.data!)
-                    let rawTimetableString = json["data"]["timetableJson"].rawString()
-                    
+                    // let rawTimetableString = json["data"]["timetableJson"].rawString()
+                    let rawTimetableString = json["data"].rawString()
                     let strData = rawTimetableString!.data(using: String.Encoding.utf8, allowLossyConversion: false)
                     let jsonData: JSON = try JSON(data: strData!)
+                    print(jsonData)
                     completion(jsonData, nil)
                 } catch {
+                    print(error)
                     completion(nil, FetchError(message: "Kunde inte hämta vecka"))
                 }
             }
@@ -243,14 +260,52 @@ class Skola24Wrapper{
                 "showHeader": false,
                 "week": JSON.null
             ]), encoder: JSONParameterEncoder.sortedKeys, headers: headers).responseJSON { response in
+                // print(response)
                 do {
                     if (response.data == nil) {
                         throw NSError()
                     }
                     let json:JSON = try JSON(data: response.data!)
-                    let rawTimetableString = json["data"]["timetableJson"].rawString()
+                    let rawTimetableString = json["data"].rawString()
+                    let strData = rawTimetableString!.data(using: String.Encoding.utf8, allowLossyConversion: false)
+                    let lessonList: JSON = try JSON(data: strData!)["lessonInfo"]
+                    var eventList: [Event] = []
+                    for lesson in lessonList {
+                        print(lesson)
+                        let texts = lesson.1["texts"]
+                        let timeStart = DateExtensions.newDateFromHourMinuteString(hourMinuteString: "" + lesson.1["timeStart"].stringValue.split(separator: ":")[0] + ":" + lesson.1["timeStart"].stringValue.split(separator: ":")[1], from: selectedDate)
+                        
+                        let timeEnd = DateExtensions.newDateFromHourMinuteString(hourMinuteString: "" + lesson.1["timeEnd"].stringValue.split(separator: ":")[0] + ":" + lesson.1["timeEnd"].stringValue.split(separator: ":")[1], from: selectedDate)
+                        
+                        var information = ""
+                        for (index, element) in texts.arrayValue.enumerated() {
+                            if (index != 0) {
+                                information = information + " " + element.stringValue
+                            }
+                        }
+                        
+                        information = information.trimmingCharacters(in: [" "])
+                        
+                        let working = Event(start: timeStart, end: timeEnd, title: texts[0].stringValue, information: information)
+                        eventList.append(working)
+                    }
+                    eventList = eventList.sorted {
+                        $0.start < $1.start
+                    }
+                    completion(eventList, nil)
+                } catch {
+                    completion([], FetchError(message: "Kunde bygga idag-vy"))
+                }
+                /*do {
+                    if (response.data == nil) {
+                        throw NSError()
+                    }
+                    let json:JSON = try JSON(data: response.data!)
+                    //let rawTimetableString = json["data"]["timetableJson"].rawString()
+                    let rawTimetableString = json["data"].rawString()
                     
                     let strData = rawTimetableString!.data(using: String.Encoding.utf8, allowLossyConversion: false)
+                    print(strData)
                     let timetable: JSON = try JSON(data: strData!)["textList"]
                     let boxList: JSON = try JSON(data: strData!)["boxList"]
                     
@@ -333,10 +388,15 @@ class Skola24Wrapper{
                     eventList = eventList.sorted {
                         $0.start < $1.start
                     }
+                    
+                    for var event in eventList {
+                        event.id = event.title + event.start.localString(dateStyle: .long, timeStyle: .full)
+                    }
+                    
                     completion(eventList, nil)
                 } catch {
                     completion([], FetchError(message: "Kunde bygga idag-vy"))
-                }
+                }*/
             }
         }
     }
